@@ -1,0 +1,1965 @@
+/* Collection View Styles - Art Deco Theme */
+
+:root {
+    --brass-dark: #8b7355;
+    --brass-mid: #c9a55c;
+    --brass-light: #e8d5a3;
+    --gold-glow: #ffd700;
+    --parchment: #f5f0e1;
+    --parchment-dark: #c9c4b5;
+    --dark-wood: #1a1510;
+    --leather-brown: #2d2418;
+    --damage-red: #ff4444;
+    /* Wood gradients - matching game */
+    --wood-dark: #1a1410;
+    --wood-mid: #2a2218;
+    --wood-light: #3d3225;
+    --wood-highlight: #5a4a35;
+}
+
+.collection-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(180deg, var(--dark-wood) 0%, #0d0b08 100%);
+    color: var(--parchment);
+    overflow: hidden;
+    font-family: 'Cinzel', serif;
+}
+
+/* Header - Art Deco */
+.collection-header {
+    padding: 20px 30px;
+    background: linear-gradient(180deg, rgba(201, 165, 92, 0.1) 0%, rgba(0, 0, 0, 0.4) 100%);
+    border-bottom: 2px solid var(--brass-mid);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+/* Decorative corner accents */
+.collection-header::before,
+.collection-header::after {
+    content: '';
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border: 2px solid var(--brass-mid);
+}
+
+.collection-header::before {
+    top: 10px;
+    left: 10px;
+    border-right: none;
+    border-bottom: none;
+}
+
+.collection-header::after {
+    top: 10px;
+    right: 10px;
+    border-left: none;
+    border-bottom: none;
+}
+
+.collection-header h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--gold-glow);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.collection-stats {
+    display: flex;
+    gap: 20px;
+    font-size: 14px;
+    color: var(--brass-light);
+}
+
+.collection-stats span {
+    padding: 5px 12px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--brass-dark);
+    border-radius: 3px;
+}
+
+.back-button {
+    padding: 10px 20px;
+    background: linear-gradient(180deg, var(--leather-brown) 0%, #1a1208 100%);
+    border: 2px solid var(--brass-mid);
+    border-radius: 4px;
+    color: var(--parchment);
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.back-button:hover {
+    background: linear-gradient(180deg, #3d3020 0%, #2a1f10 100%);
+    border-color: var(--brass-light);
+    box-shadow: 0 0 15px rgba(201, 165, 92, 0.3);
+    transform: translateY(-2px);
+}
+
+/* Tab Navigation - Art Deco */
+.collection-tabs {
+    display: flex;
+    gap: 5px;
+    padding: 15px 30px;
+    background: rgba(0, 0, 0, 0.4);
+    border-bottom: 1px solid var(--brass-dark);
+}
+
+.tab-button {
+    padding: 12px 24px;
+    background: linear-gradient(180deg, rgba(45, 36, 24, 0.8) 0%, rgba(26, 21, 16, 0.8) 100%);
+    border: 1px solid var(--brass-dark);
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+    color: var(--brass-light);
+    font-family: 'Cinzel', serif;
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tab-button:hover {
+    background: linear-gradient(180deg, rgba(60, 48, 32, 0.9) 0%, rgba(35, 28, 20, 0.9) 100%);
+    color: var(--parchment);
+    border-color: var(--brass-mid);
+}
+
+.tab-button.active {
+    background: linear-gradient(180deg, var(--brass-mid) 0%, var(--brass-dark) 100%);
+    color: var(--dark-wood);
+    border-color: var(--brass-light);
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* Content Area */
+.collection-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 30px;
+    background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.2) 100%);
+}
+
+/* Scrollbar styling */
+.collection-content::-webkit-scrollbar {
+    width: 12px;
+}
+
+.collection-content::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+    border-left: 1px solid var(--brass-dark);
+}
+
+.collection-content::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--brass-mid) 0%, var(--brass-dark) 100%);
+    border-radius: 2px;
+    border: 1px solid var(--brass-dark);
+}
+
+.collection-content::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, var(--brass-light) 0%, var(--brass-mid) 100%);
+}
+
+/* Filter Bar - Art Deco */
+.filter-bar {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding: 15px 20px;
+    background: linear-gradient(180deg, rgba(45, 36, 24, 0.6) 0%, rgba(26, 21, 16, 0.8) 100%);
+    border: 1px solid var(--brass-dark);
+    border-radius: 4px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.filter-bar::before {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    border: 1px solid rgba(201, 165, 92, 0.1);
+    border-radius: 2px;
+    pointer-events: none;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.filter-group label {
+    font-size: 11px;
+    color: var(--brass-light);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.filter-bar select,
+.filter-bar input[type="text"],
+.filter-group select,
+.filter-group input[type="text"] {
+    padding: 8px 12px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--brass-dark);
+    border-radius: 3px;
+    color: var(--parchment);
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+}
+
+.filter-bar select:focus,
+.filter-bar input[type="text"]:focus,
+.filter-group select:focus,
+.filter-group input[type="text"]:focus {
+    outline: none;
+    border-color: var(--brass-mid);
+    background: rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 8px rgba(201, 165, 92, 0.2);
+}
+
+.filter-bar select option {
+    background: var(--dark-wood);
+    color: var(--parchment);
+}
+
+/* Search input styling */
+.search-input {
+    min-width: 200px;
+}
+
+/* Results count */
+.collection-results-count {
+    text-align: center;
+    padding: 15px;
+    color: var(--brass-light);
+    font-size: 13px;
+    border-top: 1px solid var(--brass-dark);
+    margin-top: 20px;
+}
+
+.no-results {
+    text-align: center;
+    padding: 40px;
+    color: var(--brass-light);
+    font-size: 16px;
+    font-style: italic;
+}
+
+/* Grid Layout - optimized for square aspect-ratio cards */
+.collection-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 15px;
+    padding: 10px;
+    contain: content;
+}
+
+/* Minion Card - Art Deco style matching the game */
+/* Uses same structure as desktop.css but with collection-specific grid sizing */
+
+.collection-container .minion-card {
+    /* Art Deco card styling - with performance optimizations */
+    border-radius: 5px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    contain: layout style;
+    will-change: transform;
+    cursor: pointer;
+    position: relative;
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    /* Brass frame border - explicitly NOT selected/blue */
+    border: 2px solid var(--brass-mid, #c9a55c) !important;
+    /* Use background-color so it doesn't override inline background-image for minion art */
+    background-color: #0d0b08 !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5) !important;
+}
+
+/* Override desktop.css selected/selectable states - collection cards are never selected */
+.collection-container .minion-card.selected,
+.collection-container .minion-card.selectable,
+.collection-container .minion-card[data-selected],
+.collection-container .minion-card.clickable {
+    border-color: var(--brass-mid, #c9a55c) !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5) !important;
+}
+
+.collection-container .minion-card.selected::after,
+.collection-container .minion-card.selectable::after {
+    border-color: rgba(201, 165, 92, 0.15) !important;
+}
+
+/* Inner card content area with image */
+.collection-container .minion-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Art deco inner border accent */
+.collection-container .minion-card::after {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border: 1px solid rgba(201, 165, 92, 0.15);
+    border-radius: 2px;
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* All content above the overlay */
+.collection-container .minion-card > * {
+    position: relative;
+    z-index: 2;
+}
+
+.collection-container .minion-card:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+    border-color: var(--brass-light, #e8d5a3);
+}
+
+.collection-container .minion-card.golden {
+    border-color: var(--gold-glow, #ffd700);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5), 0 0 15px rgba(255, 215, 0, 0.4);
+}
+
+.collection-container .minion-card.golden::before {
+    background: rgba(255, 215, 0, 0.05);
+}
+
+.collection-container .minion-card.golden::after {
+    border-color: rgba(255, 235, 140, 0.25);
+}
+
+/* Minion name - top left with border */
+.collection-container .minion-name {
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 0.6rem;
+    color: var(--parchment, #f5f0e1);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    z-index: 12;
+    max-width: 65%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background: rgba(13, 11, 8, 0.95);
+    border: 1px solid var(--brass-mid, #c9a55c);
+    border-top: none;
+    border-left: none;
+    border-radius: 0 0 4px 0;
+    padding: 3px 8px;
+}
+
+/* Minion tier - top right with border */
+.collection-container .minion-tier {
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--gold-glow, #ffd700);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+    z-index: 12;
+    background: rgba(13, 11, 8, 0.95);
+    border: 1px solid var(--brass-mid, #c9a55c);
+    border-top: none;
+    border-right: none;
+    border-radius: 0 0 0 4px;
+    padding: 3px 8px;
+}
+
+/* Tags (keywords) - touch left border, flow down from name */
+.collection-container .minion-tags {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    max-width: 60%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    z-index: 3;
+    overflow: hidden;
+}
+
+/* Effect tags - Art Deco chevron/arrow style */
+.collection-container .effect-tag {
+    padding: 3px 12px 3px 6px;
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 50%, calc(100% - 8px) 100%, 0 100%);
+    cursor: help;
+    transition: filter 0.2s ease, box-shadow 0.2s ease;
+}
+
+.collection-container .effect-tag:hover {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+    filter: brightness(1.2);
+}
+
+/* Combined stats box - flush bottom left corner */
+.collection-container .minion-stats-box {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    border-radius: 0 4px 0 3px;
+    overflow: hidden;
+    z-index: 12;
+    background: linear-gradient(180deg, #0d0b08 0%, #080604 100%);
+    border-top: 1px solid var(--brass-mid, #c9a55c);
+    border-right: 1px solid var(--brass-mid, #c9a55c);
+}
+
+.collection-container .minion-stats {
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+.collection-container .stat {
+    padding: 4px 6px;
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    min-width: 32px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.collection-container .stat.health {
+    background: transparent;
+    border: none;
+    color: var(--damage-red, #ff4444);
+}
+
+.collection-container .stat.attack {
+    background: transparent;
+    border: none;
+    color: var(--brass-light, #e8d5a3);
+    border-right: 1px solid var(--brass-dark, #8b7355);
+}
+
+/* Tribe display - bottom right flush to edge */
+.collection-container .minion-tribes {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    border-radius: 4px 0 3px 0;
+    overflow: hidden;
+    z-index: 12;
+    max-width: 50%;
+    background: linear-gradient(180deg, #0d0b08 0%, #080604 100%);
+    border-top: 1px solid var(--brass-mid, #c9a55c);
+    border-left: 1px solid var(--brass-mid, #c9a55c);
+}
+
+.collection-container .minion-tribe {
+    background: transparent;
+    border: none;
+    padding: 3px 8px;
+    font-family: 'Cinzel', serif;
+    font-size: 0.55rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    color: var(--gold-glow, #ffd700);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+/* Legacy type display (single tribe fallback) */
+.collection-container .minion-type {
+    font-size: 14px;
+    color: #aaa;
+    margin-bottom: 12px;
+    font-style: italic;
+}
+
+/* Tooltip styles for collection */
+.collection-container .tooltip {
+    position: relative;
+}
+
+.collection-container .tooltip .tooltiptext {
+    visibility: hidden;
+    width: 200px;
+    background-color: rgba(13, 11, 8, 0.95);
+    color: #f5f0e1;
+    text-align: left;
+    border-radius: 6px;
+    padding: 8px 12px;
+    position: absolute;
+    z-index: 100;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -100px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    border: 1px solid var(--brass-mid, #c9a55c);
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    line-height: 1.4;
+    text-transform: none;
+    letter-spacing: normal;
+    font-weight: normal;
+    clip-path: none;
+}
+
+.collection-container .tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+.collection-container .tooltip .tooltiptext strong {
+    color: var(--gold-glow, #ffd700);
+}
+
+/* Band Card - Art Deco Style */
+.collection-container .band-card {
+    background: linear-gradient(180deg, var(--leather-brown) 0%, var(--dark-wood) 100%);
+    border: 2px solid var(--brass-mid);
+    border-radius: 4px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.collection-container .band-card::after {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border: 1px solid rgba(201, 165, 92, 0.15);
+    border-radius: 2px;
+    pointer-events: none;
+}
+
+.collection-container .band-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), 0 0 15px rgba(201, 165, 92, 0.2);
+    border-color: var(--brass-light);
+}
+
+.collection-container .band-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--gold-glow);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.collection-container .band-tier {
+    padding: 4px 10px;
+    background: linear-gradient(180deg, var(--brass-mid) 0%, var(--brass-dark) 100%);
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--dark-wood);
+}
+
+.collection-container .band-zone {
+    font-size: 13px;
+    color: var(--brass-light);
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Band Container Styles - Art Deco */
+.collection-container .band-container {
+    background: linear-gradient(180deg, var(--leather-brown) 0%, var(--dark-wood) 100%);
+    border: 2px solid var(--brass-mid);
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.collection-container .band-container::after {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border: 1px solid rgba(201, 165, 92, 0.15);
+    border-radius: 2px;
+    pointer-events: none;
+}
+
+.collection-container .band-container:hover {
+    border-color: var(--brass-light);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 0 0 10px rgba(201, 165, 92, 0.15);
+}
+
+/* Band container grid - smaller cards for band view */
+.collection-container .band-container .collection-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+}
+
+.collection-container .band-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--brass-dark);
+}
+
+.collection-container .band-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--gold-glow);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.collection-container .band-meta {
+    display: flex;
+    gap: 10px;
+}
+
+.collection-container .band-tier-badge {
+    padding: 4px 12px;
+    background: linear-gradient(180deg, var(--brass-mid) 0%, var(--brass-dark) 100%);
+    border: 1px solid var(--brass-light);
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--dark-wood);
+    text-transform: uppercase;
+}
+
+.collection-container .band-zone-badge {
+    padding: 4px 12px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--brass-dark);
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--brass-light);
+    text-transform: uppercase;
+}
+
+.collection-container .band-summary {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 16px;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--brass-dark);
+    border-radius: 3px;
+}
+
+.collection-container .band-stat {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    color: var(--parchment);
+}
+
+.collection-container .band-minions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+}
+
+.collection-container .band-minion-card {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 12px;
+    transition: all 0.2s ease;
+}
+
+.collection-container .band-minion-card:hover {
+    background: rgba(0, 0, 0, 0.4);
+    border-color: rgba(240, 147, 251, 0.3);
+    transform: translateY(-2px);
+}
+
+.collection-container .band-minion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.collection-container .band-minion-name {
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+}
+
+.collection-container .custom-stats-badge {
+    color: #ffd700;
+    font-size: 16px;
+}
+
+.collection-container .band-minion-stats {
+    display: flex;
+    gap: 10px;
+}
+
+.collection-container .stat-badge {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.collection-container .stat-health {
+    color: #ff6b6b;
+}
+
+.collection-container .stat-attack {
+    color: #4dabf7;
+}
+
+.collection-container .band-minions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.collection-container .band-minion-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    font-size: 13px;
+}
+
+.collection-container .band-minion-name {
+    color: #fff;
+    font-weight: bold;
+}
+
+.collection-container .band-minion-stats {
+    color: #aaa;
+    font-size: 12px;
+}
+
+/* Compact Minion Card (for bands) - scoped to collection only */
+.collection-container .minion-card-compact {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    padding: 12px;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+}
+
+.collection-container .minion-compact-image {
+    width: 100%;
+    height: 80px;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.collection-container .minion-compact-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.collection-container .minion-card-compact:hover {
+    background: rgba(0, 0, 0, 0.4);
+    border-color: rgba(102, 126, 234, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+}
+
+.collection-container .minion-compact-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+.collection-container .minion-compact-name {
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.collection-container .minion-compact-badges {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.collection-container .minion-compact-tier {
+    padding: 2px 6px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: bold;
+    color: white;
+}
+
+.collection-container .custom-badge {
+    color: #ffd700;
+    font-size: 14px;
+    line-height: 1;
+}
+
+.collection-container .minion-compact-type {
+    font-size: 12px;
+    color: #aaa;
+    font-style: italic;
+}
+
+.collection-container .minion-compact-stats {
+    display: flex;
+    gap: 8px;
+}
+
+.collection-container .stat-compact {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.collection-container .stat-compact.stat-health {
+    color: #ff6b6b;
+}
+
+.collection-container .stat-compact.stat-attack {
+    color: #4dabf7;
+}
+
+.collection-container .minion-compact-keywords {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.collection-container .keyword-badge-small {
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: bold;
+    border: 1px solid currentColor;
+}
+
+/* Event Card - Selection Zone Style (matching game) */
+.collection-container .event-card {
+    background: linear-gradient(180deg, var(--wood-mid) 0%, var(--wood-dark) 100%);
+    border: 2px solid var(--brass-mid);
+    border-radius: 8px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Inner accent border */
+.collection-container .event-card::before {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    right: 4px;
+    bottom: 4px;
+    border: 1px solid rgba(201, 165, 92, 0.15);
+    border-radius: 4px;
+    pointer-events: none;
+}
+
+.collection-container .event-card:hover {
+    transform: translateY(-3px);
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.5),
+        0 0 15px rgba(201, 165, 92, 0.25);
+    border-color: var(--brass-light);
+}
+
+.collection-container .event-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.collection-container .event-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--gold-glow);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: 'Cinzel', serif;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+}
+
+.collection-container .event-type {
+    padding: 4px 12px;
+    background: linear-gradient(180deg, var(--brass-mid) 0%, var(--brass-dark) 100%);
+    border: 1px solid var(--brass-light);
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--dark-wood);
+}
+
+.collection-container .event-description {
+    font-size: 14px;
+    color: var(--parchment);
+    line-height: 1.5;
+    margin-bottom: 12px;
+    font-family: Georgia, serif;
+}
+
+.collection-container .event-zones {
+    font-size: 13px;
+    color: var(--brass-light);
+    margin-bottom: 8px;
+}
+
+.collection-container .event-scaling {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--brass-dark);
+}
+
+/* Event List Item Styles - Selection Zone Style (matching game) */
+.collection-container .event-list-item {
+    background: linear-gradient(180deg, var(--wood-mid) 0%, var(--wood-dark) 100%);
+    border: 2px solid var(--brass-mid);
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 16px;
+    transition: all 0.3s ease;
+    display: flex;
+    gap: 20px;
+    position: relative;
+}
+
+/* Inner accent border - matching selection-zone */
+.collection-container .event-list-item::before {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    right: 4px;
+    bottom: 4px;
+    border: 1px solid rgba(201, 165, 92, 0.15);
+    border-radius: 4px;
+    pointer-events: none;
+}
+
+.collection-container .event-icon {
+    flex-shrink: 0;
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    border: 1px solid var(--brass-dark);
+}
+
+.collection-container .event-icon svg {
+    color: var(--gold-glow);
+}
+
+.collection-container .event-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.collection-container .event-list-item:hover {
+    border-color: var(--brass-light);
+    box-shadow:
+        0 6px 20px rgba(0, 0, 0, 0.4),
+        0 0 15px rgba(201, 165, 92, 0.25);
+}
+
+.collection-container .event-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--gold-glow);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: 'Cinzel', serif;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.collection-container .event-type-badge {
+    padding: 4px 12px;
+    background: linear-gradient(180deg, var(--brass-mid) 0%, var(--brass-dark) 100%);
+    border: 1px solid var(--brass-light);
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--dark-wood);
+    text-transform: uppercase;
+}
+
+.collection-container .event-details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+    padding: 12px;
+    background: linear-gradient(180deg, var(--wood-dark) 0%, rgba(0, 0, 0, 0.4) 100%);
+    border: 1px solid var(--brass-dark);
+    border-radius: 4px;
+}
+
+.collection-container .event-info-row {
+    display: flex;
+    gap: 12px;
+    font-size: 13px;
+}
+
+.collection-container .event-info-label {
+    color: var(--brass-light);
+    font-weight: 600;
+    min-width: 70px;
+    text-transform: uppercase;
+    font-size: 11px;
+}
+
+.collection-container .event-info-value {
+    color: var(--parchment);
+}
+
+.collection-container .reward-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.collection-container .reward-badge {
+    padding: 4px 10px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    border: 1px solid currentColor;
+}
+
+.collection-container .tier-scaling-info {
+    margin-top: 16px;
+    padding: 14px;
+    background: linear-gradient(180deg, var(--wood-dark) 0%, rgba(0, 0, 0, 0.4) 100%);
+    border: 1px solid var(--brass-dark);
+    border-radius: 4px;
+}
+
+.collection-container .tier-scaling-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--gold-glow);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    font-family: 'Cinzel', serif;
+}
+
+.collection-container .tier-scaling-text {
+    font-size: 13px;
+    color: var(--parchment);
+    line-height: 1.5;
+}
+
+.collection-container .event-scaling {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--brass-dark);
+}
+
+.collection-container .scaling-title {
+    font-size: 13px;
+    color: var(--gold-glow);
+    font-weight: 700;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-family: 'Cinzel', serif;
+}
+
+.collection-container .scaling-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.collection-container .scaling-list li {
+    font-size: 13px;
+    color: var(--parchment);
+    padding: 8px 14px;
+    background: linear-gradient(180deg, var(--wood-dark) 0%, rgba(0, 0, 0, 0.3) 100%);
+    border: 1px solid var(--brass-dark);
+    border-radius: 4px;
+    line-height: 1.4;
+}
+
+.collection-container .scaling-list strong {
+    color: var(--gold-glow);
+}
+
+/* Event Screens and Choices - Selection Zone Style (matching game) */
+.collection-container .event-screens-container {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--brass-dark);
+}
+
+.collection-container .screens-title {
+    font-size: 14px;
+    color: var(--gold-glow);
+    font-weight: 700;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: 'Cinzel', serif;
+    text-shadow: 0 0 8px rgba(255, 215, 0, 0.2);
+}
+
+/* Event Screen - Selection Zone style */
+.collection-container .event-screen {
+    background: linear-gradient(180deg, var(--wood-mid) 0%, var(--wood-dark) 100%);
+    border: 2px solid var(--brass-mid);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 12px;
+    position: relative;
+}
+
+/* Inner accent border */
+.collection-container .event-screen::before {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    right: 4px;
+    bottom: 4px;
+    border: 1px solid rgba(201, 165, 92, 0.15);
+    border-radius: 4px;
+    pointer-events: none;
+}
+
+.collection-container .event-screen-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--brass-dark);
+}
+
+.collection-container .event-screen-number {
+    background: linear-gradient(180deg, var(--brass-mid) 0%, var(--brass-dark) 100%);
+    color: var(--dark-wood);
+    font-weight: 700;
+    font-size: 12px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--brass-light);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.collection-container .event-screen-title {
+    font-weight: 700;
+    color: var(--gold-glow);
+    font-size: 14px;
+    flex: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-family: 'Cinzel', serif;
+}
+
+.collection-container .event-screen-type {
+    font-size: 11px;
+    color: var(--parchment);
+    padding: 4px 10px;
+    background: linear-gradient(180deg, var(--brass-dark) 0%, rgba(93, 78, 58, 0.8) 100%);
+    border: 1px solid var(--brass-mid);
+    border-radius: 3px;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.collection-container .event-screen-text {
+    font-size: 13px;
+    color: var(--parchment);
+    line-height: 1.5;
+    margin: 10px 0;
+    font-style: italic;
+    font-family: Georgia, serif;
+    padding: 10px;
+    background: linear-gradient(180deg, var(--wood-dark) 0%, rgba(0, 0, 0, 0.3) 100%);
+    border-radius: 4px;
+    border-left: 3px solid var(--brass-mid);
+}
+
+/* Event Choices Container */
+.collection-container .event-choices {
+    margin-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.collection-container .choices-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--gold-glow);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-family: 'Cinzel', serif;
+    width: 100%;
+}
+
+/* Event Choice - Selection Card Style (matching game) */
+.collection-container .event-choice {
+    background: linear-gradient(180deg, var(--wood-light) 0%, var(--wood-mid) 100%);
+    border: 2px solid var(--brass-dark);
+    border-radius: 6px;
+    padding: 14px;
+    flex: 1;
+    min-width: 180px;
+    max-width: 280px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+/* Inner accent border */
+.collection-container .event-choice::before {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    right: 3px;
+    bottom: 3px;
+    border: 1px solid rgba(201, 165, 92, 0.1);
+    border-radius: 3px;
+    pointer-events: none;
+}
+
+.collection-container .event-choice:hover {
+    border-color: var(--brass-light);
+    transform: translateY(-3px);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+        0 6px 20px rgba(0, 0, 0, 0.4),
+        0 0 12px rgba(201, 165, 92, 0.25);
+    background: linear-gradient(180deg, var(--wood-highlight) 0%, var(--wood-light) 100%);
+}
+
+.collection-container .choice-name {
+    font-weight: 600;
+    color: var(--parchment);
+    font-size: 14px;
+    margin-bottom: 6px;
+    font-family: 'Cinzel', serif;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.collection-container .choice-description {
+    font-size: 12px;
+    color: var(--parchment-dark);
+    line-height: 1.4;
+    margin-bottom: 6px;
+}
+
+.collection-container .choice-next {
+    font-size: 11px;
+    color: var(--brass-light);
+    font-style: italic;
+}
+
+.collection-container .choice-scaling {
+    font-size: 11px;
+    color: var(--gold-glow);
+    font-weight: 700;
+    margin-top: 8px;
+    padding: 5px 10px;
+    background: linear-gradient(180deg, var(--brass-dark) 0%, rgba(93, 78, 58, 0.8) 100%);
+    border: 1px solid var(--brass-mid);
+    border-radius: 3px;
+    display: inline-block;
+    font-family: 'Cinzel', serif;
+}
+
+/* Chain info styling */
+.collection-container .choice-chain,
+.collection-container .screen-chains {
+    font-size: 11px;
+    color: var(--brass-light);
+    margin-top: 8px;
+    padding: 6px 10px;
+    background: linear-gradient(180deg, rgba(74, 222, 128, 0.1) 0%, rgba(74, 222, 128, 0.05) 100%);
+    border: 1px solid rgba(74, 222, 128, 0.3);
+    border-radius: 3px;
+    font-style: italic;
+}
+
+.collection-container .choice-condition {
+    font-size: 11px;
+    color: #feca57;
+    margin-top: 6px;
+    padding: 4px 8px;
+    background: rgba(254, 202, 87, 0.1);
+    border: 1px solid rgba(254, 202, 87, 0.3);
+    border-radius: 3px;
+    font-style: italic;
+}
+
+/* Event badges container */
+.collection-container .event-badges {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.collection-container .event-category-badge {
+    padding: 4px 10px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+/* Event meta container */
+.collection-container .event-meta {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.collection-container .event-zone-badge {
+    padding: 4px 10px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--brass-dark);
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--brass-light);
+    text-transform: uppercase;
+}
+
+/* Event warning text */
+.collection-container .event-warning {
+    background: linear-gradient(180deg, rgba(255, 107, 107, 0.15) 0%, rgba(255, 107, 107, 0.08) 100%);
+    border: 1px solid rgba(255, 107, 107, 0.4);
+    border-left: 3px solid #ff6b6b;
+    padding: 10px 14px;
+    border-radius: 4px;
+    font-size: 13px;
+    color: #ff6b6b;
+    margin: 12px 0;
+    font-weight: 600;
+}
+
+/* Event Options Container - game-like style */
+.collection-container .event-options-container {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--brass-dark);
+}
+
+.collection-container .options-header {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--gold-glow);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-family: 'Cinzel', serif;
+    text-shadow: 0 0 8px rgba(255, 215, 0, 0.2);
+}
+
+.collection-container .event-choices {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* Selection Card for Collection Choices - square card event options */
+.collection-container .selection-card.collection-choice {
+    background: linear-gradient(180deg, var(--wood-light) 0%, var(--wood-mid) 100%);
+    border: 1px solid var(--brass-dark);
+    border-radius: 4px;
+    padding: 8px;
+    cursor: default;
+    transition: all 0.2s ease;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    /* Force exact square dimensions, overriding base .selection-card min-height */
+    width: 90px;
+    min-width: 90px;
+    max-width: 90px;
+    height: 90px;
+    min-height: 90px;
+    max-height: 90px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+/* Inner accent border - disabled for inline layout */
+
+.collection-container .selection-card.collection-choice:hover {
+    border-color: var(--brass-mid);
+    background: linear-gradient(180deg, var(--wood-highlight) 0%, var(--wood-light) 100%);
+}
+
+/* Choice with condition (greyed out until met) */
+.collection-container .selection-card.collection-choice.has-condition {
+    border-color: rgba(254, 202, 87, 0.4);
+}
+
+.collection-container .selection-card.collection-choice.has-condition::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 8px;
+    height: 8px;
+    background: #feca57;
+    border-radius: 0 4px 0 4px;
+}
+
+/* Choice name - centered in square card */
+.collection-container .selection-card.collection-choice .choice-name {
+    font-weight: 600;
+    color: var(--gold-glow);
+    font-size: 10px;
+    font-family: 'Cinzel', serif;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    white-space: normal;
+    line-height: 1.3;
+    word-break: break-word;
+}
+
+/* Tooltips are handled by TooltipPortal system from ui-display-desktop.js */
+/* Uses standard .tooltip + .tooltiptext structure with locking, nesting, and keyword enrichment */
+
+/* Event ID display */
+.collection-container .event-id {
+    font-family: monospace;
+    font-size: 12px;
+    color: var(--brass-light);
+    background: rgba(0, 0, 0, 0.2);
+    padding: 2px 6px;
+    border-radius: 3px;
+}
+
+/* Event Options (for select_buff_type screens) - Selection Card Style */
+.collection-container .event-options {
+    margin-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.collection-container .options-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--gold-glow);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-family: 'Cinzel', serif;
+    width: 100%;
+}
+
+/* Event Option - Selection Card Style (matching game) */
+.collection-container .event-option {
+    background: linear-gradient(180deg, var(--wood-light) 0%, var(--wood-mid) 100%);
+    border: 2px solid var(--brass-dark);
+    border-radius: 6px;
+    padding: 14px;
+    flex: 1;
+    min-width: 180px;
+    max-width: 280px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+/* Inner accent border */
+.collection-container .event-option::before {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    right: 3px;
+    bottom: 3px;
+    border: 1px solid rgba(201, 165, 92, 0.1);
+    border-radius: 3px;
+    pointer-events: none;
+}
+
+.collection-container .event-option:hover {
+    border-color: var(--brass-light);
+    transform: translateY(-3px);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+        0 6px 20px rgba(0, 0, 0, 0.4),
+        0 0 12px rgba(201, 165, 92, 0.25);
+    background: linear-gradient(180deg, var(--wood-highlight) 0%, var(--wood-light) 100%);
+}
+
+.collection-container .option-name {
+    font-weight: 600;
+    color: var(--parchment);
+    font-size: 14px;
+    margin-bottom: 6px;
+    font-family: 'Cinzel', serif;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.collection-container .option-description {
+    font-size: 12px;
+    color: var(--parchment-dark);
+    line-height: 1.4;
+    margin-bottom: 8px;
+}
+
+.collection-container .option-scaling {
+    font-size: 11px;
+    color: var(--gold-glow);
+    font-weight: 700;
+    margin-top: 8px;
+    padding: 5px 10px;
+    background: linear-gradient(180deg, var(--brass-dark) 0%, rgba(93, 78, 58, 0.8) 100%);
+    border: 1px solid var(--brass-mid);
+    border-radius: 3px;
+    display: inline-block;
+    font-family: 'Cinzel', serif;
+}
+
+/* Event scaling info display */
+.collection-container .event-scaling-info {
+    font-size: 13px;
+    color: var(--parchment);
+    margin: 10px 0;
+    padding: 10px 14px;
+    background: linear-gradient(180deg, var(--wood-dark) 0%, rgba(0, 0, 0, 0.3) 100%);
+    border: 1px solid var(--brass-dark);
+    border-left: 3px solid var(--gold-glow);
+    border-radius: 4px;
+}
+
+.collection-container .event-scaling-info strong {
+    color: var(--gold-glow);
+}
+
+.collection-container .scaling-info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--parchment);
+}
+
+.collection-container .scaling-tier {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 10px;
+    background: linear-gradient(180deg, var(--wood-dark) 0%, rgba(0, 0, 0, 0.3) 100%);
+    border: 1px solid var(--brass-dark);
+    border-radius: 4px;
+}
+
+.collection-container .scaling-tier-label {
+    color: var(--brass-light);
+    font-family: 'Cinzel', serif;
+    text-transform: uppercase;
+    font-size: 11px;
+}
+
+.collection-container .scaling-tier-value {
+    color: var(--gold-glow);
+    font-weight: bold;
+}
+
+/* Loading State - scoped to collection only */
+.collection-container .loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 400px;
+    gap: 20px;
+}
+
+.collection-container .loading-spinner {
+    width: 60px;
+    height: 60px;
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    border-top: 4px solid #667eea;
+    border-radius: 50%;
+    animation: collection-spin 1s linear infinite;
+}
+
+@keyframes collection-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.collection-container .loading-text {
+    font-size: 18px;
+    color: #aaa;
+}
+
+/* Error State - scoped to collection only */
+.collection-container .error-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 400px;
+    gap: 20px;
+}
+
+.collection-container .error-icon {
+    font-size: 60px;
+    color: #f5576c;
+}
+
+.collection-container .error-text {
+    font-size: 18px;
+    color: #f5576c;
+    text-align: center;
+}
+
+.collection-container .retry-button {
+    padding: 12px 24px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    border: none;
+    border-radius: 6px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.collection-container .retry-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+/* Empty State - scoped to collection only */
+.collection-container .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 300px;
+    gap: 15px;
+}
+
+.collection-container .empty-text {
+    font-size: 18px;
+    color: #aaa;
+}
+
+/* Scrollbar Styling */
+.collection-content::-webkit-scrollbar {
+    width: 10px;
+}
+
+.collection-content::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.collection-content::-webkit-scrollbar-thumb {
+    background: rgba(102, 126, 234, 0.5);
+    border-radius: 5px;
+}
+
+.collection-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(102, 126, 234, 0.7);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .collection-header {
+        padding: 15px 20px;
+    }
+
+    .collection-header h1 {
+        font-size: 22px;
+    }
+
+    .collection-tabs {
+        padding: 10px 20px;
+        overflow-x: auto;
+    }
+
+    .tab-button {
+        padding: 10px 16px;
+        font-size: 14px;
+        white-space: nowrap;
+    }
+
+    .collection-content {
+        padding: 15px 20px;
+    }
+
+    .filter-bar {
+        padding: 12px;
+        gap: 10px;
+    }
+
+    .collection-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 15px;
+    }
+
+    .minion-card,
+    .band-card,
+    .event-card {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .collection-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .filter-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-group {
+        width: 100%;
+    }
+
+    .search-input {
+        width: 100%;
+    }
+}
+
+/* ============================================
+   IMAGES TAB STYLES - Art Deco Theme
+   ============================================ */
+
+/* Image Card - matches minion card scaling with background-image */
+.collection-container .image-card {
+    border: 2px solid var(--brass-mid);
+    border-radius: 5px;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    overflow: hidden;
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: var(--dark-wood);
+}
+
+.collection-container .image-card::after {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border: 1px solid rgba(201, 165, 92, 0.15);
+    border-radius: 2px;
+    pointer-events: none;
+}
+
+.collection-container .image-card:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+    border-color: var(--brass-light);
+}
+
+/* Image card name - top left */
+.collection-container .image-card-name {
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 0.6rem;
+    color: var(--parchment);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    z-index: 12;
+    max-width: 90%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background: rgba(13, 11, 8, 0.95);
+    border: 1px solid var(--brass-mid);
+    border-top: none;
+    border-left: none;
+    border-radius: 0 0 4px 0;
+    padding: 3px 8px;
+}
+
+/* Equipped image - gold border (just rim, no glow) */
+.collection-container .image-card.image-equipped {
+    border-color: var(--gold-glow);
+    border-width: 3px;
+    box-shadow: inset 0 0 0 1px rgba(255, 215, 0, 0.4);
+}
+
+.collection-container .image-card.image-equipped::after {
+    border-color: rgba(255, 215, 0, 0.3);
+}
+
+.collection-container .image-card.image-equipped:hover {
+    border-color: var(--gold-glow);
+    box-shadow: inset 0 0 0 1px rgba(255, 215, 0, 0.5), 0 8px 20px rgba(0, 0, 0, 0.6);
+}
+
+/* Equipped badge */
+.collection-container .equipped-badge {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(180deg, var(--gold-glow) 0%, #c9a55c 100%);
+    color: var(--dark-wood);
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 0.55rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    padding: 3px 8px;
+    border-top-left-radius: 4px;
+    border: 1px solid var(--gold-glow);
+    border-bottom: none;
+    border-right: none;
+    z-index: 12;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* Locked image overlay */
+.collection-container .image-card.image-locked {
+    cursor: not-allowed;
+    filter: grayscale(70%) brightness(0.6);
+}
+
+.collection-container .image-card.image-locked:hover {
+    transform: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    border-color: var(--brass-dark);
+}
+
+.collection-container .locked-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.collection-container .locked-overlay .lock-icon {
+    font-size: 2rem;
+    opacity: 0.8;
+}

@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dev Mode - Event Testing</title>
+
+    <!-- Reuse main game CSS -->
+    <link rel="stylesheet" href="desktop.css?v=11">
+    <link rel="stylesheet" href="animations.css?v=11">
+
+    <!-- Dev mode specific styles -->
+    <style>
+        .dev-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .dev-header {
+            background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .dev-header h1 {
+            color: #FFD700;
+            margin: 0;
+            font-size: 2rem;
+        }
+
+        .dev-header p {
+            color: rgba(255,255,255,0.8);
+            margin-top: 10px;
+        }
+
+        .dev-layout {
+            display: grid;
+            grid-template-columns: 320px 1fr 300px;
+            gap: 20px;
+        }
+
+        .dev-sidebar {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+        }
+
+        .dev-main {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+            min-height: 500px;
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        /* Ensure event preview area constrains its content */
+        #eventPreview {
+            max-width: 100%;
+            overflow: hidden;
+        }
+
+        .dev-icons-panel {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+        }
+
+        /* Section styling */
+        .control-section {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .control-section h4 {
+            color: #FFD700;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        /* Event selector */
+        .event-category {
+            margin-bottom: 15px;
+        }
+
+        .event-category h5 {
+            color: #4CAF50;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .event-list {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .event-item {
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+        }
+
+        .event-item:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateX(5px);
+        }
+
+        .event-item.selected {
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            border: 1px solid #4CAF50;
+        }
+
+        .event-item .event-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .event-item .event-name {
+            flex: 1;
+        }
+
+        /* Run configuration */
+        .config-field {
+            margin-bottom: 12px;
+        }
+
+        .config-field label {
+            display: block;
+            color: #FFD700;
+            margin-bottom: 5px;
+            font-size: 0.85rem;
+        }
+
+        .config-field input,
+        .config-field select {
+            width: 100%;
+            padding: 8px;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 5px;
+        }
+
+        .config-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        /* Band setup */
+        .band-setup {
+            margin-bottom: 15px;
+        }
+
+        .band-setup h5 {
+            color: #FFD700;
+            margin-bottom: 10px;
+        }
+
+        .band-list {
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            padding: 10px;
+            min-height: 60px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .band-minion {
+            background: rgba(255,255,255,0.1);
+            border-radius: 5px;
+            padding: 5px 10px;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+        }
+
+        .band-minion .remove-btn {
+            background: rgba(244, 67, 54, 0.8);
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        /* Icon gallery */
+        .icon-gallery {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .icon-item {
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .icon-item:hover {
+            background: rgba(255,255,255,0.2);
+            transform: scale(1.05);
+        }
+
+        .icon-item .icon-svg {
+            width: 32px;
+            height: 32px;
+            margin: 0 auto 5px;
+        }
+
+        .icon-item .icon-name {
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.8);
+        }
+
+        /* Event preview area */
+        .event-preview {
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 400px;
+        }
+
+        /* Constrain selection-zone within dev mode preview */
+        #eventPreview .selection-zone,
+        #eventPreview .combat-zone,
+        #eventPreview .zone-portal-zone {
+            max-width: 100%;
+            box-sizing: border-box;
+            margin: 0;
+        }
+
+        /* Scale down selection options grid for dev mode */
+        #eventPreview .selection-options {
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+        }
+
+        /* Scale down minion cards in dev mode */
+        #eventPreview .minion-card {
+            transform: scale(0.85);
+            transform-origin: top center;
+        }
+
+        #eventPreview .selection-card {
+            min-height: 100px;
+        }
+
+        #eventPreview .selection-card .minion-card {
+            min-height: 100px;
+            height: 100px;
+        }
+
+        /* Combat battlefield scaling for dev mode */
+        #eventPreview .combat-battlefield {
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        #eventPreview .combat-side {
+            max-width: 100%;
+        }
+
+        #eventPreview .combat-minions {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        /* Ensure dev info bar doesn't overflow */
+        .dev-info-bar {
+            word-wrap: break-word;
+            overflow: hidden;
+        }
+
+        /* Selection controls within dev mode */
+        #eventPreview .selection-controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        #eventPreview .selection-controls .btn {
+            min-width: auto;
+            padding: 10px 20px;
+        }
+
+        /* Make sure selection titles and text don't expand */
+        #eventPreview h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        #eventPreview p {
+            font-size: 0.95rem;
+        }
+
+        .preview-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .preview-header h3 {
+            color: #FFD700;
+            margin-bottom: 10px;
+        }
+
+        .preview-header .event-type-badge {
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: inline-block;
+        }
+
+        /* Selection preview */
+        .selection-preview {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .selection-preview h4 {
+            color: #FFD700;
+            margin-bottom: 15px;
+        }
+
+        .selection-option {
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .selection-option:hover {
+            background: rgba(255,255,255,0.2);
+            border-color: rgba(76, 175, 80, 0.5);
+        }
+
+        .selection-option.selected {
+            background: rgba(76, 175, 80, 0.3);
+            border-color: #4CAF50;
+        }
+
+        .selection-option .option-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .selection-option .option-desc {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        /* Ring preview */
+        .ring-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .ring-position {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 10px;
+            width: 80px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .ring-position:hover {
+            background: rgba(255,255,255,0.2);
+            transform: scale(1.05);
+        }
+
+        .ring-position.current {
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            border: 2px solid #FFD700;
+        }
+
+        .ring-position .pos-number {
+            font-size: 0.7rem;
+            opacity: 0.6;
+        }
+
+        .ring-position .pos-icon {
+            width: 24px;
+            height: 24px;
+            margin: 5px auto;
+        }
+
+        .ring-position .pos-name {
+            font-size: 0.7rem;
+            word-wrap: break-word;
+        }
+
+        /* Scaling preview */
+        .scaling-preview {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .scaling-preview h4 {
+            color: #FFD700;
+            margin-bottom: 15px;
+        }
+
+        .scaling-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .scaling-table th,
+        .scaling-table td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .scaling-table th {
+            color: #FFD700;
+        }
+
+        /* Debug panel */
+        .debug-panel {
+            background: rgba(0,0,0,0.5);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .debug-panel h4 {
+            color: #4CAF50;
+            margin-bottom: 10px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        /* Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .action-buttons .btn {
+            flex: 1;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 1.2rem;
+            color: #FFD700;
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 50px;
+            opacity: 0.6;
+        }
+
+        .empty-state .icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="dev-container">
+        <div class="dev-header">
+            <h1>Dev Mode - Event Testing</h1>
+            <p>Spoof events, test icons, and preview event selection screens</p>
+            <button class="btn btn-secondary" onclick="window.location.href='index.html'" style="margin-top: 10px;">
+                Back to Game
+            </button>
+            <button class="btn btn-secondary" onclick="window.location.href='dev-combat.html'" style="margin-top: 10px; margin-left: 10px;">
+                Combat Dev Mode
+            </button>
+        </div>
+
+        <div class="dev-layout">
+            <!-- Left Sidebar - Event Selection & Config -->
+            <div class="dev-sidebar">
+                <!-- Run Configuration -->
+                <div class="control-section">
+                    <h4>Run Configuration</h4>
+                    <div class="config-row">
+                        <div class="config-field">
+                            <label>Ring Level</label>
+                            <select id="ringLevel" onchange="updateRingPreview()">
+                                <option value="1">Ring 1</option>
+                                <option value="2">Ring 2</option>
+                                <option value="3">Ring 3</option>
+                                <option value="4">Ring 4</option>
+                            </select>
+                        </div>
+                        <div class="config-field">
+                            <label>Position</label>
+                            <select id="ringPosition">
+                                <option value="0">0</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5" selected>5 (Start)</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="config-field">
+                        <label>Zone</label>
+                        <select id="zoneSelect" onchange="updateRingPreview()">
+                            <option value="starting_plains">The Crossroads</option>
+                            <option value="human_kingdom">Human Kingdom</option>
+                            <option value="beast_wildlands">Beast Wildlands</option>
+                            <option value="undead_crypts">Undead Crypts</option>
+                            <option value="fey_grove">Fey Grove</option>
+                            <option value="construct_foundry">Construct Foundry</option>
+                            <option value="cult_sanctum">Cult Sanctum</option>
+                        </select>
+                    </div>
+                    <div class="config-row">
+                        <div class="config-field">
+                            <label>Gold</label>
+                            <input type="number" id="goldAmount" value="10" min="0" max="999">
+                        </div>
+                        <div class="config-field">
+                            <label>Health</label>
+                            <input type="number" id="healthAmount" value="100" min="1" max="100">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Event State (for story events) -->
+                <div class="control-section">
+                    <h4>Event State (Story)</h4>
+                    <div class="config-field">
+                        <label>Bells Rung (Bell Tower)</label>
+                        <input type="number" id="bellsRung" value="0" min="0" max="10">
+                    </div>
+                </div>
+
+                <!-- Band Setup -->
+                <div class="control-section">
+                    <h4>Band Setup</h4>
+                    <div class="band-setup">
+                        <div class="config-field">
+                            <select id="minionSelect">
+                                <option value="">Add minion...</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" onclick="addMinionToBand()" style="width: 100%; margin-bottom: 10px;">
+                            Add Minion
+                        </button>
+                        <div class="band-list" id="bandList">
+                            <div class="empty-state" style="padding: 10px;">No minions</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Event Categories -->
+                <div class="control-section">
+                    <h4>Select Event Type</h4>
+                    <div id="eventCategories">
+                        <!-- Populated by JavaScript -->
+                        <div class="loading">Loading events...</div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="triggerEvent()">
+                        Trigger Event
+                    </button>
+                </div>
+            </div>
+
+            <!-- Main Area - Event Preview -->
+            <div class="dev-main">
+                <div id="eventPreview">
+                    <div class="empty-state">
+                        <div class="icon">?</div>
+                        <h3>Select an Event</h3>
+                        <p>Choose an event type from the sidebar and click "Trigger Event" to preview it</p>
+                    </div>
+                </div>
+
+                <!-- Ring Preview -->
+                <div id="ringPreviewSection" style="margin-top: 20px;">
+                    <h4 style="color: #FFD700; margin-bottom: 15px;">Ring Preview</h4>
+                    <div class="ring-preview" id="ringPreview">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Scaling Preview -->
+                <div id="scalingPreviewSection" style="display: none;">
+                    <div class="scaling-preview">
+                        <h4>Event Scaling by Ring</h4>
+                        <div id="scalingContent">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Debug Panel -->
+                <div class="debug-panel" id="debugPanel" style="display: none;">
+                    <h4>Debug Information</h4>
+                    <pre id="debugContent"></pre>
+                </div>
+            </div>
+
+            <!-- Right Panel - Icon Gallery -->
+            <div class="dev-icons-panel">
+                <div class="control-section">
+                    <h4>Event Icons Gallery</h4>
+                    <div class="icon-gallery" id="iconGallery">
+                        <!-- Populated by JavaScript -->
+                        <div class="loading">Loading icons...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load production game systems - lucide-icons first since others depend on it -->
+    <!-- Cache busting: v11 - dynamic Rung keyword with bells_rung count -->
+    <script src="js/lucide-icons.js?v=11"></script>
+    <script src="js/game-core.js?v=11"></script>
+    <script src="js/ui/display-tooltips.js?v=11"></script>
+    <script src="js/ui/display-ring.js?v=11"></script>
+    <script src="js/ui/display-effects.js?v=11"></script>
+    <script src="js/ui/display-core.js?v=11"></script>
+    <script src="js/ui/display-selection.js?v=11"></script>
+    <script src="js/ui/display-minion.js?v=11"></script>
+
+    <!-- Dev events specific JavaScript (includes its own selection handling) -->
+    <script src="js/dev-events.js?v=11"></script>
+</body>
+</html>

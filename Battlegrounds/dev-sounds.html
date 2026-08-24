@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dev Mode - Sound Studio</title>
+
+    <!-- Reuse main game CSS -->
+    <link rel="stylesheet" href="desktop.css">
+    <link rel="stylesheet" href="animations.css">
+
+    <style>
+        body {
+            background: #0d0b08;
+            color: #d4af5a;
+            font-family: 'Crimson Text', serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .studio-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .studio-header {
+            background: linear-gradient(135deg, #4B0082 0%, #8B008B 100%);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .studio-header h1 {
+            color: #FFD700;
+            margin: 0;
+            font-size: 2rem;
+        }
+        .studio-header p { color: rgba(255,255,255,0.8); margin: 10px 0 0; }
+
+        .studio-header a {
+            color: #FFD700;
+            text-decoration: underline;
+        }
+
+        .studio-layout {
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            gap: 20px;
+        }
+
+        .studio-panel {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 12px;
+            padding: 16px 18px;
+        }
+
+        .studio-panel h2 {
+            color: #d4af5a;
+            font-size: 1.1rem;
+            margin: 0 0 12px;
+            border-bottom: 1px solid rgba(212,175,90,0.25);
+            padding-bottom: 8px;
+        }
+
+        .studio-panel h3 {
+            color: #b89a4a;
+            font-size: 0.95rem;
+            margin: 16px 0 8px;
+        }
+
+        .row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+            color: #c9b074;
+            font-size: 0.9rem;
+        }
+
+        .row label { min-width: 90px; }
+        .row input[type="range"] { flex: 1; }
+        .row .value { min-width: 40px; text-align: right; font-variant-numeric: tabular-nums; }
+
+        .btn {
+            background: linear-gradient(135deg, #4B0082, #6A5ACD);
+            border: 1px solid rgba(255,215,0,0.35);
+            color: #ffeaa7;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.85rem;
+        }
+        .btn:hover { filter: brightness(1.15); }
+        .btn.small { padding: 3px 8px; font-size: 0.75rem; }
+        .btn.ghost {
+            background: transparent;
+            border-color: rgba(212,175,90,0.4);
+            color: #c9b074;
+        }
+
+        .sound-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 10px;
+        }
+
+        .sound-row {
+            display: grid;
+            grid-template-columns: 1fr auto auto auto;
+            gap: 8px;
+            align-items: center;
+            padding: 8px 10px;
+            background: rgba(0,0,0,0.25);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
+
+        .sound-row .name { color: #e2c580; font-weight: 600; word-break: break-word; }
+        .sound-row .meta { color: #8c7a5a; font-size: 0.75rem; }
+
+        .sound-row.music { opacity: 0.6; }
+
+        .category-section {
+            margin-bottom: 20px;
+        }
+        .category-section h3 {
+            color: #d4af5a;
+            font-size: 1rem;
+            margin: 20px 0 10px;
+            border-left: 3px solid #d4af5a;
+            padding-left: 10px;
+        }
+
+        select, input[type="number"] {
+            background: #1a1510;
+            border: 1px solid rgba(212,175,90,0.4);
+            color: #d4af5a;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+
+        .status-line {
+            color: #8c7a5a;
+            font-size: 0.75rem;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .unlock-banner {
+            background: #cc8844;
+            color: #1a1510;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="studio-container">
+        <div class="studio-header">
+            <h1>🎛️ Sound Studio</h1>
+            <p>Audition every sound in the game. Tweak pitch / gain, test the music engine, change zones.
+                <a href="/">← Back to game</a>
+            </p>
+        </div>
+
+        <div id="unlock-banner" class="unlock-banner" style="display:none;"
+             onclick="studioUnlockAudio()">
+            🔊 Click anywhere to enable audio (browser blocks autoplay)
+        </div>
+
+        <div class="studio-layout">
+            <!-- Left: transport + mixer + instrument tests -->
+            <div>
+                <div class="studio-panel">
+                    <h2>🎚️ Mixer</h2>
+                    <div class="row">
+                        <label>Master</label>
+                        <input type="range" min="0" max="100" id="mix-master">
+                        <span class="value" id="mix-master-val">—</span>
+                    </div>
+                    <div class="row">
+                        <label>Music</label>
+                        <input type="range" min="0" max="100" id="mix-music">
+                        <span class="value" id="mix-music-val">—</span>
+                    </div>
+                    <div class="row">
+                        <label>SFX</label>
+                        <input type="range" min="0" max="100" id="mix-sfx">
+                        <span class="value" id="mix-sfx-val">—</span>
+                    </div>
+                    <div class="row">
+                        <label>UI</label>
+                        <input type="range" min="0" max="100" id="mix-ui">
+                        <span class="value" id="mix-ui-val">—</span>
+                    </div>
+                    <div class="row">
+                        <label>Muted</label>
+                        <input type="checkbox" id="mix-muted">
+                    </div>
+                </div>
+
+                <div class="studio-panel" style="margin-top:14px;">
+                    <h2>🎹 Instruments</h2>
+                    <div class="row">
+                        <label>Pitch (semi)</label>
+                        <input type="range" min="-24" max="24" value="0" id="inst-semi">
+                        <span class="value" id="inst-semi-val">0</span>
+                    </div>
+                    <div class="row">
+                        <label>Gain</label>
+                        <input type="range" min="0" max="100" value="70" id="inst-gain">
+                        <span class="value" id="inst-gain-val">70%</span>
+                    </div>
+                    <div class="row">
+                        <label>Channel</label>
+                        <select id="inst-channel">
+                            <option value="sfx">sfx</option>
+                            <option value="music">music</option>
+                            <option value="ui">ui</option>
+                        </select>
+                    </div>
+                    <div class="row" style="flex-wrap:wrap;">
+                        <button class="btn" onclick="studioPlayInstrument('harp')">🎵 Harp</button>
+                        <button class="btn" onclick="studioPlayInstrument('lute')">🪕 Lute</button>
+                        <button class="btn" onclick="studioPlayInstrument('recorder')">🎶 Recorder</button>
+                        <button class="btn" onclick="studioPlayInstrument('trumpet')">🎺 Trumpet</button>
+                        <button class="btn" onclick="studioPlayInstrument('drum')">🥁 Drum</button>
+                        <button class="btn" onclick="studioPlayInstrument('pad')">🌊 Pad</button>
+                        <button class="btn" onclick="studioPlayInstrument('ui')">✨ UI</button>
+                    </div>
+                </div>
+
+                <div class="studio-panel" style="margin-top:14px;">
+                    <h2>🎼 Music Engine</h2>
+                    <div class="row">
+                        <button class="btn" onclick="studioMusicStart()">▶ Start</button>
+                        <button class="btn ghost" onclick="studioMusicStop()">⏹ Stop</button>
+                    </div>
+                    <div class="row">
+                        <label>Zone</label>
+                        <select id="music-zone"></select>
+                    </div>
+                    <div class="row">
+                        <label>Intensity</label>
+                        <input type="range" min="0" max="100" value="35" id="music-intensity">
+                        <span class="value" id="music-intensity-val">35%</span>
+                    </div>
+                    <div class="row">
+                        <button class="btn small" onclick="studioMusicBump(-0.1)">− 0.1</button>
+                        <button class="btn small" onclick="studioMusicBump(+0.1)">+ 0.1</button>
+                        <button class="btn small ghost" onclick="studioMusicEnqueue('harp')">Enqueue Harp</button>
+                        <button class="btn small ghost" onclick="studioMusicEnqueue('trumpet')">Enqueue Trumpet</button>
+                    </div>
+                    <div class="status-line" id="music-status">stopped</div>
+                </div>
+            </div>
+
+            <!-- Right: full SOUND_MAP -->
+            <div class="studio-panel">
+                <h2>📜 SOUND_MAP</h2>
+                <p class="meta" style="color:#8c7a5a;">
+                    Every action that fires a sound. Click ▶ to audition as-defined, or adjust pitch/gain locally.
+                </p>
+                <div id="sound-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sound engine (same modules as the main game) -->
+    <script src="js/lucide-icons.js"></script>
+    <script src="js/sound-bus.js"></script>
+    <script src="js/sound-map.js"></script>
+    <script src="js/music-engine.js"></script>
+    <script src="js/dev-sounds.js"></script>
+</body>
+</html>

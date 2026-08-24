@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Event Map Icons — Display Mockup</title>
+<style>
+/* ========================================
+   Tavern Brawl Color Palette (from game)
+   ======================================== */
+:root {
+    --wood-dark: #1a1410;
+    --wood-mid: #2a2218;
+    --wood-light: #3d3225;
+    --wood-highlight: #5a4a35;
+    --leather-dark: #252019;
+    --leather-mid: #3d352a;
+    --brass-dark: #5D4E3A;
+    --brass-mid: #8B7355;
+    --brass-light: #c9a55c;
+    --gold-glow: #ffd475;
+    --gold-deep: #b8860b;
+    --parchment: #c9b896;
+    --parchment-dark: #8a7a60;
+    --ink-dark: #1a1206;
+    --health-red: #cc4444;
+    --heal-green: #66cc66;
+    --mana-blue: #6688cc;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    background: var(--wood-dark);
+    color: var(--parchment);
+    font-family: 'Crimson Text', Georgia, serif;
+    padding: 30px;
+}
+
+h1 {
+    text-align: center;
+    color: var(--brass-light);
+    font-size: 1.8rem;
+    margin-bottom: 8px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+h1 small {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--parchment-dark);
+    text-transform: none;
+    letter-spacing: 0;
+    margin-top: 4px;
+}
+
+.section-label {
+    text-align: center;
+    color: var(--brass-mid);
+    font-size: 0.85rem;
+    margin: 30px 0 12px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    border-bottom: 1px solid var(--brass-dark);
+    padding-bottom: 6px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ========================================
+   CURRENT (old) Icons — for comparison
+   ======================================== */
+.comparison-row {
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+    margin: 20px auto;
+    max-width: 1200px;
+    flex-wrap: wrap;
+}
+
+.comparison-col {
+    flex: 1;
+    min-width: 360px;
+    max-width: 560px;
+}
+
+.comparison-col h2 {
+    text-align: center;
+    font-size: 1rem;
+    color: var(--parchment-dark);
+    margin-bottom: 16px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.comparison-col h2.new-label {
+    color: var(--brass-light);
+}
+
+/* ========================================
+   Stone Wave Strip (simulated map)
+   ======================================== */
+.wave-strip {
+    display: flex;
+    gap: 0;
+    justify-content: center;
+    align-items: flex-end;
+    padding: 80px 10px 20px;
+    position: relative;
+    min-height: 160px;
+}
+
+.stone-slot {
+    width: 52px;
+    height: 32px;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.stone {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, #3a3228 0%, #2a2218 60%, #1e1a14 100%);
+    border-radius: 4px 4px 2px 2px;
+    border: 1px solid #4a4238;
+    border-bottom: 2px solid #1a1610;
+}
+
+/* ========================================
+   OLD flag style — current game look
+   ======================================== */
+.old-flag {
+    position: absolute;
+    bottom: 50%;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.old-pole {
+    width: 2px;
+    height: 55px;
+    background: #4a4540;
+    position: relative;
+}
+.old-pole::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 6px;
+    background: radial-gradient(circle at 30% 30%, #5a5550, #3a3530);
+    border-radius: 50%;
+}
+
+.old-banner {
+    position: absolute;
+    top: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 48px;
+    background: linear-gradient(135deg, #1e1b18, #141210);
+    border: 1px solid #3a3530;
+    clip-path: polygon(0 0, 100% 0, 100% 82%, 50% 100%, 0 82%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 8px;
+}
+
+.old-banner .event-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.old-banner .event-icon svg {
+    width: 18px;
+    height: 18px;
+}
+
+.old-banner .event-name {
+    font-size: 0.28rem;
+    color: #6a6560;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 36px;
+}
+
+/* Old tooltip */
+.old-flag .flag-tooltip {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 180px;
+    background: linear-gradient(180deg, #1a1815, #0d0b08);
+    color: var(--parchment);
+    border: 1px solid var(--brass-dark);
+    border-radius: 3px;
+    padding: 6px 8px;
+    font-size: 0.7rem;
+    line-height: 1.3;
+    white-space: normal;
+    z-index: 100;
+    pointer-events: none;
+}
+.old-flag:hover .flag-tooltip { display: block; }
+
+
+/* ========================================
+   NEW flag style — proposed redesign
+   ======================================== */
+.new-flag {
+    position: absolute;
+    bottom: 50%;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Thinner, tapered pole with a cleaner finish */
+.new-pole {
+    width: 1.5px;
+    height: 52px;
+    background: linear-gradient(180deg, var(--brass-mid), var(--brass-dark) 70%, #3a3228);
+    position: relative;
+}
+
+/* Brass diamond finial instead of a dot */
+.new-pole::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    width: 5px;
+    height: 5px;
+    background: var(--brass-light);
+    box-shadow: 0 0 4px rgba(201, 165, 92, 0.5);
+}
+
+/* Banner — rounded bottom instead of clip-path pentagon */
+.new-banner {
+    position: absolute;
+    top: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 38px;
+    height: 38px;
+    background: linear-gradient(145deg, #1c1a16, #0e0d0b);
+    border: 1px solid var(--brass-dark);
+    border-radius: 4px 4px 12px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+    transition: all 0.2s ease;
+}
+
+/* Per-type accent stripe at top of banner */
+.new-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    border-radius: 4px 4px 0 0;
+    background: var(--accent-color, var(--brass-dark));
+}
+
+/* Icon — duotone style with accent fill */
+.new-banner .event-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+}
+.new-banner .event-icon svg {
+    width: 18px;
+    height: 18px;
+}
+/* Override the inline fill: #fff with accent-based duotone */
+.new-banner .event-icon svg path,
+.new-banner .event-icon svg circle,
+.new-banner .event-icon svg rect,
+.new-banner .event-icon svg polygon,
+.new-banner .event-icon svg polyline,
+.new-banner .event-icon svg line {
+    fill: none !important;
+    stroke: var(--icon-color, #b0a898) !important;
+    stroke-width: 1.8;
+}
+/* Filled shapes for specific icons */
+.new-banner[data-type="combat"] .event-icon svg path,
+.new-banner[data-type="hard_combat"] .event-icon svg path,
+.new-banner[data-type="shop"] .event-icon svg path,
+.new-banner[data-type="minion"] .event-icon svg path,
+.new-banner[data-type="blessing"] .event-icon svg path,
+.new-banner[data-type="general"] .event-icon svg circle {
+    fill: var(--accent-color) !important;
+    fill-opacity: 0.15;
+}
+
+.new-banner .event-name {
+    font-size: 0.3rem;
+    color: var(--parchment-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 34px;
+    opacity: 0.7;
+}
+
+/* === Per-type accent colors === */
+.new-banner[data-type="combat"] {
+    --accent-color: #c44;
+    --icon-color: #e88;
+}
+.new-banner[data-type="hard_combat"] {
+    --accent-color: #a33;
+    --icon-color: #d66;
+}
+.new-banner[data-type="shop"] {
+    --accent-color: var(--brass-light);
+    --icon-color: var(--gold-glow);
+}
+.new-banner[data-type="minion"] {
+    --accent-color: var(--heal-green);
+    --icon-color: #8ddb8d;
+}
+.new-banner[data-type="blessing"] {
+    --accent-color: var(--mana-blue);
+    --icon-color: #8aace0;
+}
+.new-banner[data-type="general"] {
+    --accent-color: #a88ccc;
+    --icon-color: #c0aae0;
+}
+.new-banner[data-type="statue"] {
+    --accent-color: var(--brass-mid);
+    --icon-color: var(--brass-light);
+}
+.new-banner[data-type="portal"] {
+    --accent-color: #888;
+    --icon-color: #aaa;
+}
+
+/* Hover lift */
+.new-flag:hover .new-banner {
+    transform: translateX(-50%) translateY(-2px);
+    border-color: var(--accent-color, var(--brass-mid));
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6), 0 0 8px color-mix(in srgb, var(--accent-color, var(--brass-mid)) 30%, transparent);
+}
+
+/* Current marker glow */
+.new-flag.is-current .new-banner {
+    border-color: var(--accent-color, var(--brass-light));
+    box-shadow: 0 0 12px color-mix(in srgb, var(--accent-color, var(--brass-light)) 40%, transparent),
+                0 2px 8px rgba(0, 0, 0, 0.5);
+}
+.new-flag.is-current .new-pole::before {
+    background: var(--accent-color, var(--brass-light));
+    box-shadow: 0 0 6px var(--accent-color, var(--brass-light));
+}
+
+/* Completed dim */
+.new-flag.is-completed { opacity: 0.3; }
+
+/* ========================================
+   NEW Tooltip — richer, structured
+   ======================================== */
+.new-flag .map-tooltip {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 220px;
+    background: linear-gradient(180deg, #1a1815, #0d0b08);
+    border: 1.5px solid var(--accent-color, var(--brass-dark));
+    border-radius: 4px;
+    padding: 0;
+    font-size: 0.75rem;
+    line-height: 1.4;
+    white-space: normal;
+    z-index: 100;
+    pointer-events: none;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.8), 0 0 8px color-mix(in srgb, var(--accent-color, var(--brass-dark)) 20%, transparent);
+    overflow: hidden;
+}
+.new-flag:hover .map-tooltip { display: block; }
+
+/* Header bar with accent color */
+.map-tooltip .tt-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    background: color-mix(in srgb, var(--accent-color, var(--brass-dark)) 15%, #1a1815);
+    border-bottom: 1px solid color-mix(in srgb, var(--accent-color, var(--brass-dark)) 30%, transparent);
+}
+.map-tooltip .tt-header svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+}
+.map-tooltip .tt-header svg path,
+.map-tooltip .tt-header svg circle,
+.map-tooltip .tt-header svg rect,
+.map-tooltip .tt-header svg polygon,
+.map-tooltip .tt-header svg line {
+    fill: none !important;
+    stroke: var(--accent-color, var(--parchment)) !important;
+    stroke-width: 2;
+}
+.map-tooltip .tt-title {
+    font-weight: 700;
+    color: var(--parchment);
+    font-size: 0.78rem;
+}
+
+/* Body text */
+.map-tooltip .tt-body {
+    padding: 6px 10px 8px;
+    color: var(--parchment-dark);
+    font-size: 0.72rem;
+}
+.map-tooltip .tt-body .tt-desc {
+    margin-bottom: 4px;
+}
+.map-tooltip .tt-body .tt-hint {
+    font-size: 0.65rem;
+    opacity: 0.6;
+    font-style: italic;
+}
+
+/* Bullet list for split events */
+.map-tooltip .tt-options {
+    list-style: none;
+    padding: 0;
+    margin: 4px 0 0;
+}
+.map-tooltip .tt-options li {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 0;
+    color: var(--parchment);
+    font-size: 0.7rem;
+}
+.map-tooltip .tt-options li svg {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+}
+.map-tooltip .tt-options li svg path,
+.map-tooltip .tt-options li svg circle {
+    fill: none !important;
+    stroke: var(--parchment-dark) !important;
+    stroke-width: 2;
+}
+
+/* ========================================
+   Full ring mockup
+   ======================================== */
+.ring-mockup {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 20px;
+    background: linear-gradient(180deg, rgba(26, 20, 16, 0.6), rgba(18, 14, 10, 0.8));
+    border: 1px solid var(--brass-dark);
+    border-radius: 6px;
+}
+.ring-mockup h3 {
+    text-align: center;
+    color: var(--brass-light);
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+    letter-spacing: 1px;
+}
+.ring-mockup .ring-label {
+    text-align: center;
+    font-size: 0.65rem;
+    color: var(--parchment-dark);
+    margin-bottom: 16px;
+}
+
+.ring-strip {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 0;
+    padding: 90px 0 10px;
+    position: relative;
+    overflow-x: auto;
+}
+
+/* Position indicator dot */
+.pos-dot {
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--parchment-dark);
+    opacity: 0.4;
+    font-size: 0;
+}
+</style>
+</head>
+<body>
+
+<h1>
+    Event Map Icons
+    <small>Side-by-side comparison — Current vs Proposed redesign</small>
+</h1>
+
+<!-- ============================================================
+     SIDE BY SIDE: OLD vs NEW
+     ============================================================ -->
+<div class="section-label">Individual Icon Comparison</div>
+
+<div class="comparison-row">
+
+    <!-- OLD COLUMN -->
+    <div class="comparison-col">
+        <h2>Current</h2>
+        <div class="wave-strip">
+
+            <!-- Combat -->
+            <div class="stone-slot">
+                <div class="stone"></div>
+                <div class="old-flag">
+                    <div class="old-pole">
+                        <div class="old-banner">
+                            <span class="event-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><style>path, circle, rect, polygon { fill: #fff; }</style><path d="m11 19-6-6"/><path d="m5 21-2-2"/><path d="m8 16-4 4"/><path d="M9.5 17.5 21 6V3h-3L6.5 14.5"/></svg></span>
+                            <span class="event-name">Combat</span>
+                        </div>
+                    </div>
+                    <div class="flag-tooltip">Position 7: Combat</div>
+                </div>
+            </div>
+
+            <!-- Hard Combat -->
+            <div class="stone-slot">
+                <div class="stone"></div>
+                <div class="old-flag">
+                    <div class="old-pole">
+                        <div class="old-banner">
+                            <span class="event-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><style>path, circle, rect, polygon { fill: #fff; }</style><path d="m12.5 17-.5-1-.5 1h1z"/><path d="M15 22a1 1 0 0 0 1-1v-1a2 2 0 0 0 1.56-3.25 8 8 0 1 0-11.12 0A2 2 0 0 0 8 20v1a1 1 0 0 0 1 1z"/><circle cx="15" cy="12" r="1"/><circle cx="9" cy="12" r="1"/></svg></span>
+                            <span class="event-name">Hard</span>
+                        </div>
+                    </div>
+                    <div class="flag-tooltip">Position 8: Hard Combat</div>
+                </div>
+            </div>
+
+            <!-- Shop -->
+            <div class="stone-slot">
+                <div class="stone"></div>
+                <div class="old-flag">
+                    <div class="old-pole">
+                        <div class="old-banner">
+                            <span class="event-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><style>path, circle, rect, polygon { fill: #fff; }</style><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"/></svg></span>
+                            <span class="event-name">Shop</span>
+                        </div>
+                    </div>
+                    <div class="flag-tooltip">Position 4: Shop</div>
+                </div>
+            </div>
+
+            <!-- Minion -->
+            <div class="stone-slot">
+                <div class="stone"></div>
+                <div class="old-flag">
+                    <div class="old-pole">
+                        <div class="old-banner">
+                            <span class="event-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><style>path, circle, rect, polygon { fill: #fff; }</style><path d="M20 12v10H4V12"/><path d="M22 7H2v5h20z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg></span>
+                            <span class="event-name">Minion</span>
+                        </div>
+                    </div>
+                    <div class="flag-tooltip">Position 5: Free Minion</div>
+                </div>
+            </div>
+
+            <!-- Blessing -->
+            <div class="stone-slot">
+                <div class="stone"></div>
+                <div class="old-flag">
+                    <div class="old-pole">
+                        <div class="old-banner">
+                            <span class="event-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><style>path, circle, rect, polygon { fill: #fff; }</style><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/><path d="M4 17v2"/><path d="M5 18H3"/></svg></span>
+                            <span class="event-name">Blessing</span>
+                        </div>
+                    </div>
+                    <div class="flag-tooltip">Position 6: Blessing</div>
+                </div>
+            </div>
+
+            <!-- General Event -->
+            <div class="stone-slot">
+                <div class="stone"></div>
+                <div class="old-flag">
+                    <div class="old-pole">
+                        <div class="old-banner">
+                            <span class="event-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><style>path, circle, rect, polygon { fill: #fff; }</style><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></span>
+                            <span class="event-name">Event</span>
+                        </div>
+                    </div>
+                    <div class="flag-tooltip">Position 3: General Event</div>
+                </div>
+            </div>
+
+            <!-- Statue -->
+            <div class="stone-slot">
+                <div class="stone"></div>
+                <div class="old-flag">
+                    <div class="old-pole">
+                        <div class="old-banner">
+                            <span class="event-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><style>path, circle, rect, polygon { fill: #fff; }</style><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><path d="m3.3 7 7.703 4.734a2 2 0 0 0 1.994 0L20.7 7"/><path d="m7.5 4.27 9 5.15"/></svg></span>
+                            <span class="event-name">Statue</span>
+                        </div>
+                    </div>
+                    <div class="flag-tooltip">Position 10: Statue</div>
+                </div>
+            </div>
+
+            <!-- Portal -->
+            <div class="stone-slot">
+                <div class="stone"></div>
+                <div class="old-flag">
+                    <div class="old-pole">
+                        <div class="old-banner" style="background: linear-gradient(135deg, rgba(100,100,100,0.4), rgba(60,60,60,0.5)); border-color: #666;">
+                            <span class="event-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><style>path, circle, rect, polygon { fill: #fff; }</style><rect width="8" height="8" x="3" y="3" rx="2"/><path d="M7 11v4a2 2 0 0 0 2 2h4"/><rect width="8" height="8" x="13" y="13" rx="2"/></svg></span>
+                            <span class="event-name">Portal</span>
+                        </div>
+                    </div>
+                    <div class="flag-tooltip">Position 0: Zone Portal<br>Travel to: Fey Wilds or Construct Zone</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEW COLUMN -->
+    <div class="comparison-col">
+        <h2 class="new-label">Proposed</h2>
+        <div class="wave-strip">
+
+            <!-- Combat -->
+            <div class="stone-slot">
+                <div class="stone"></div>
+                <div class="new-flag is-current">
+                    <div class="new-pole">
+                        <div class="new-banner" data-type="combat">
+                            <span class="event-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m11 19-6-6"/><path d="m5 21-2-2"/><path d="m8 16-4 4"/><path d="M9.5 17.5 21 6V3h-3L6.5 14.5"/></svg></span>
+                            <span class="event-name">Combat</span>
+                        </div>
+                    </div>
+                    <div class="map-tooltip" style="--accent-color: #c44;">
+                        <div class="tt-header">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m11 19-6-6"/><path d="m5 21-2-2"/><path d="m8 16-4 4"/><path d="M9.5 17.5 21 6V3h-3L6.5 14.5"/></svg>
+                            <span class="tt-title">Combat</span>
+                        </div>
+                        <div class="tt-body">
+                            <div class="tt-desc">Fight a warband matching your tier.</div>
+                            <div class="tt-hint">Victory awards gold</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hard Combat -->
+            <div class="stone-slot">
+                <div class="stone"></div>
+                <div class="new-flag">
+                    <div class="new-pole">
+                        <div class="new-banner" data-type="hard_combat">
+                            <span class="event-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12.5 17-.5-1-.5 1h1z"/><path d="M15 22a1 1 0 0 0 1-1v-1a2 2 0 0 0 1.56-3.25 8 8 0 1 0-11.12 0A2 2 0 0 0 8 20v1a1 1 0 0 0 1 1z"/><circle cx="15" cy="12" r="1"/><circle cx="9" cy="12" r="1"/></svg></span>
+                            <span class="event-name">Hard</span>
+                        </div>
+                    </div>
+                    <div class="map-tooltip" style="--accent-color: #a33;">
+                        <div class="tt-header">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12.5 17-.5-1-.5 1h1z"/><path d="M15 22a1 1 0 0 0 1-1v-1a2 2 0 0 0 1.56-3.25 8 8 0 1 0-11.12 0A2 2 0 0 0 8 20v1a1 1 0 0 0 1 1z"/><circle cx="15" cy="12" r="1"/><circle cx="9" cy="12" r="1"/></svg>
+                            <span class="tt-title">Hard Combat</span>
+                        </div>
+                        <div class="tt-body">
+                            <div class="tt-desc">Stronger enemies with more keywords.</div>
+                            <div class="tt-hint">Better rewards on victory</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shop -->
+            <div class="stone-slot">
+                <div class="stone"></div>
+                <div class="new-flag">
+                    <div class="new-pole">
+                        <div class="new-banner" data-type="shop">
+                            <span class="event-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/></svg></span>
+                            <span class="event-name">Shop</span>
+                        </div>
+                    </div>
+                    <div class="map-tooltip" style="--accent-color: var(--brass-light);">
+                        <div class="tt-header">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/></svg>
+                            <span class="tt-title">Shop</span>
+                        </div>
+                        <div class="tt-body">
+                            <div class="tt-desc">Spend gold to recruit minions.</div>
+                            <div class="tt-hint">Reroll for new offers</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Minion -->
+            <div class="stone-slot">
+                <div class="stone"></div>
+                <div class="new-flag">
+                    <div class="new-pole">
+                        <div class="new-banner" data-type="minion">
+                            <span class="event-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12v10H4V12"/><path d="M22 7H2v5h20z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg></span>
+                            <span class="event-name">Minion</span>
+                        </div>
+                    </div>
+                    <div class="map-tooltip" style="--accent-color: var(--heal-green);">
+                        <div class="tt-header">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12v10H4V12"/><path d="M22 7H2v5h20z"/><path d="M12 22V7"/></svg>
+                            <span class="tt-title">Free Minion</span>
+                        </div>
+                        <div class="tt-body">
+                            <div class="tt-desc">Pick one of three minions for free.</div>
+                            <div class="tt-hint">Tier-scaled selection</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Blessing -->
+            <div class="stone-slot">
+                <div class="stone"></div>
+                <div class="new-flag">
+                    <div class="new-pole">
+                        <div class="new-banner" data-type="blessing">
+                            <span class="event-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/></svg></span>
+                            <span class="event-name">Blessing</span>
+                        </div>
+                    </div>
+                    <div class="map-tooltip" style="--accent-color: var(--mana-blue);">
+                        <div class="tt-header">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+                            <span class="tt-title">Blessing</span>
+                        </div>
+                        <div class="tt-body">
+                            <div class="tt-desc">Buff a minion's attack, health, or both.</div>
+                            <div class="tt-hint">Strength scales with tier</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- General Event -->
+            <div class="stone-slot">
+                <div class="stone"></div>
+                <div class="new-flag">
+                    <div class="new-pole">
+                        <div class="new-banner" data-type="general">
+                            <span class="event-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></span>
+                            <span class="event-name">Event</span>
+                        </div>
+                    </div>
+                    <div class="map-tooltip" style="--accent-color: #a88ccc;">
+                        <div class="tt-header">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+                            <span class="tt-title">General Event</span>
+                        </div>
+                        <div class="tt-body">
+                            <div class="tt-desc">Random encounter with unique choices.</div>
+                            <div class="tt-hint">Risk/reward trade-offs</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statue -->
+            <div class="stone-slot">
+                <div class="stone"></div>
+                <div class="new-flag">
+                    <div class="new-pole">
+                        <div class="new-banner" data-type="statue">
+                            <span class="event-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><path d="m3.3 7 7.703 4.734a2 2 0 0 0 1.994 0L20.7 7"/></svg></span>
+                            <span class="event-name">Statue</span>
+                        </div>
+                    </div>
+                    <div class="map-tooltip" style="--accent-color: var(--brass-mid);">
+                        <div class="tt-header">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/></svg>
+                            <span class="tt-title">Statue</span>
+                        </div>
+                        <div class="tt-body">
+                            <div class="tt-desc">Combine three copies into a golden minion.</div>
+                            <div class="tt-hint">Doubled stats</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Portal -->
+            <div class="stone-slot">
+                <div class="stone"></div>
+                <div class="new-flag">
+                    <div class="new-pole">
+                        <div class="new-banner" data-type="portal">
+                            <span class="event-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="8" x="3" y="3" rx="2"/><path d="M7 11v4a2 2 0 0 0 2 2h4"/><rect width="8" height="8" x="13" y="13" rx="2"/></svg></span>
+                            <span class="event-name">Portal</span>
+                        </div>
+                    </div>
+                    <div class="map-tooltip" style="--accent-color: #888;">
+                        <div class="tt-header">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="8" x="3" y="3" rx="2"/><path d="M7 11v4a2 2 0 0 0 2 2h4"/><rect width="8" height="8" x="13" y="13" rx="2"/></svg>
+                            <span class="tt-title">Zone Portal</span>
+                        </div>
+                        <div class="tt-body">
+                            <div class="tt-desc">Travel to a different zone.</div>
+                            <ul class="tt-options">
+                                <li><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg> Fey Wilds</li>
+                                <li><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg> Construct Zone</li>
+                            </ul>
+                            <div class="tt-hint">Choose destination on arrival</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     FULL RING MOCKUP — new style
+     ============================================================ -->
+<div class="section-label">Full Ring Preview — Proposed Style</div>
+
+<div class="ring-mockup">
+    <h3>Ring 2 — Beast Wildlands</h3>
+    <div class="ring-label">12 positions &middot; Hover any flag for tooltip</div>
+    <div class="ring-strip">
+
+        <!-- 0: Portal -->
+        <div class="stone-slot">
+            <div class="stone"></div>
+            <div class="new-flag is-completed">
+                <div class="new-pole"><div class="new-banner" data-type="portal">
+                    <span class="event-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="8" x="3" y="3" rx="2"/><path d="M7 11v4a2 2 0 0 0 2 2h4"/><rect width="8" height="8" x="13" y="13" rx="2"/></svg></span>
+                    <span class="event-name">Portal</span>
+                </div></div>
+                <span class="pos-dot">0</span>
+            </div>
+        </div>
+
+        <!-- 1: General -->
+        <div class="stone-slot">
+            <div class="stone"></div>
+            <div class="new-flag is-completed">
+                <div class="new-pole"><div class="new-banner" data-type="general">
+                    <span class="event-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></span>
+                    <span class="event-name">Event</span>
+                </div></div>
+                <span class="pos-dot">1</span>
+            </div>
+        </div>
+
+        <!-- 2: Combat -->
+        <div class="stone-slot">
+            <div class="stone"></div>
+            <div class="new-flag is-completed">
+                <div class="new-pole"><div class="new-banner" data-type="combat">
+                    <span class="event-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m11 19-6-6"/><path d="m5 21-2-2"/><path d="m8 16-4 4"/><path d="M9.5 17.5 21 6V3h-3L6.5 14.5"/></svg></span>
+                    <span class="event-name">Combat</span>
+                </div></div>
+                <span class="pos-dot">2</span>
+            </div>
+        </div>
+
+        <!-- 3: Blessing -->
+        <div class="stone-slot">
+            <div class="stone"></div>
+            <div class="new-flag is-completed">
+                <div class="new-pole"><div class="new-banner" data-type="blessing">
+                    <span class="event-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg></span>
+                    <span class="event-name">Blessing</span>
+                </div></div>
+                <span class="pos-dot">3</span>
+            </div>
+        </div>
+
+        <!-- 4: Shop -->
+        <div class="stone-slot">
+            <div class="stone"></div>
+            <div class="new-flag is-completed">
+                <div class="new-pole"><div class="new-banner" data-type="shop">
+                    <span class="event-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/></svg></span>
+                    <span class="event-name">Shop</span>
+                </div></div>
+                <span class="pos-dot">4</span>
+            </div>
+        </div>
+
+        <!-- 5: Minion (CURRENT) -->
+        <div class="stone-slot">
+            <div class="stone"></div>
+            <div class="new-flag is-current">
+                <div class="new-pole"><div class="new-banner" data-type="minion">
+                    <span class="event-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12v10H4V12"/><path d="M22 7H2v5h20z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg></span>
+                    <span class="event-name">Minion</span>
+                </div></div>
+                <span class="pos-dot">5</span>
+                <div class="map-tooltip" style="--accent-color: var(--heal-green); display: block;">
+                    <div class="tt-header">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12v10H4V12"/><path d="M22 7H2v5h20z"/><path d="M12 22V7"/></svg>
+                        <span class="tt-title">Free Minion</span>
+                    </div>
+                    <div class="tt-body">
+                        <div class="tt-desc">Pick one of three Tier 2 minions for free.</div>
+                        <div class="tt-hint">Current position</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6: Blessing -->
+        <div class="stone-slot">
+            <div class="stone"></div>
+            <div class="new-flag">
+                <div class="new-pole"><div class="new-banner" data-type="blessing">
+                    <span class="event-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg></span>
+                    <span class="event-name">Blessing</span>
+                </div></div>
+                <span class="pos-dot">6</span>
+            </div>
+        </div>
+
+        <!-- 7: Combat -->
+        <div class="stone-slot">
+            <div class="stone"></div>
+            <div class="new-flag">
+                <div class="new-pole"><div class="new-banner" data-type="combat">
+                    <span class="event-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m11 19-6-6"/><path d="m5 21-2-2"/><path d="m8 16-4 4"/><path d="M9.5 17.5 21 6V3h-3L6.5 14.5"/></svg></span>
+                    <span class="event-name">Combat</span>
+                </div></div>
+                <span class="pos-dot">7</span>
+            </div>
+        </div>
+
+        <!-- 8: Hard Combat -->
+        <div class="stone-slot">
+            <div class="stone"></div>
+            <div class="new-flag">
+                <div class="new-pole"><div class="new-banner" data-type="hard_combat">
+                    <span class="event-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12.5 17-.5-1-.5 1h1z"/><path d="M15 22a1 1 0 0 0 1-1v-1a2 2 0 0 0 1.56-3.25 8 8 0 1 0-11.12 0A2 2 0 0 0 8 20v1a1 1 0 0 0 1 1z"/><circle cx="15" cy="12" r="1"/><circle cx="9" cy="12" r="1"/></svg></span>
+                    <span class="event-name">Hard</span>
+                </div></div>
+                <span class="pos-dot">8</span>
+            </div>
+        </div>
+
+        <!-- 9: General -->
+        <div class="stone-slot">
+            <div class="stone"></div>
+            <div class="new-flag">
+                <div class="new-pole"><div class="new-banner" data-type="general">
+                    <span class="event-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></span>
+                    <span class="event-name">Event</span>
+                </div></div>
+                <span class="pos-dot">9</span>
+            </div>
+        </div>
+
+        <!-- 10: Statue -->
+        <div class="stone-slot">
+            <div class="stone"></div>
+            <div class="new-flag">
+                <div class="new-pole"><div class="new-banner" data-type="statue">
+                    <span class="event-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><path d="m3.3 7 7.703 4.734a2 2 0 0 0 1.994 0L20.7 7"/></svg></span>
+                    <span class="event-name">Statue</span>
+                </div></div>
+                <span class="pos-dot">10</span>
+            </div>
+        </div>
+
+        <!-- 11: Portal -->
+        <div class="stone-slot">
+            <div class="stone"></div>
+            <div class="new-flag">
+                <div class="new-pole"><div class="new-banner" data-type="portal">
+                    <span class="event-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="8" x="3" y="3" rx="2"/><path d="M7 11v4a2 2 0 0 0 2 2h4"/><rect width="8" height="8" x="13" y="13" rx="2"/></svg></span>
+                    <span class="event-name">Portal</span>
+                </div></div>
+                <span class="pos-dot">11</span>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

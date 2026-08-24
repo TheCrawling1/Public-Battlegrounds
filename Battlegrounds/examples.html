@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Golden Minion Examples - Auto Battler Arena</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        /* ========================================
+           Tavern Brawl Palette (mirrors desktop.css)
+           ======================================== */
+        :root {
+            --wood-dark: #1a1410;
+            --wood-mid: #2a2218;
+            --wood-light: #3d3225;
+            --leather-dark: #252019;
+            --leather-mid: #3d352a;
+            --brass-dark: #5D4E3A;
+            --brass-mid: #8B7355;
+            --brass-light: #c9a55c;
+            --gold-glow: #ffd475;
+            --gold-deep: #b8860b;
+            --gold-bright: #ffe9a0;
+            --parchment: #c9b896;
+            --parchment-dark: #8a7a60;
+            --health-red: #cc4444;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Crimson Text', 'Segoe UI', serif;
+            background: linear-gradient(180deg, #1a1815 0%, #0d0b08 100%);
+            color: var(--parchment);
+            min-height: 100vh;
+            padding: 40px 20px 80px;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                linear-gradient(135deg, transparent 49%, var(--brass-dark) 49%, var(--brass-dark) 51%, transparent 51%),
+                linear-gradient(-135deg, transparent 49%, var(--brass-dark) 49%, var(--brass-dark) 51%, transparent 51%);
+            background-size: 30px 30px;
+            opacity: 0.04;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            color: var(--brass-light);
+            text-align: center;
+            font-size: 1.6rem;
+            margin-bottom: 6px;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+            position: relative; z-index: 1;
+        }
+
+        .subtitle {
+            color: var(--parchment-dark);
+            text-align: center;
+            font-size: 0.9rem;
+            margin-bottom: 40px;
+            position: relative; z-index: 1;
+        }
+
+        .variants-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 28px;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative; z-index: 1;
+        }
+
+        .variant {
+            background: linear-gradient(180deg, var(--wood-mid) 0%, var(--wood-dark) 100%);
+            border: 1px solid var(--brass-dark);
+            border-radius: 8px;
+            padding: 18px 16px 22px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        }
+
+        .variant h2 {
+            font-family: 'Cinzel', serif;
+            color: var(--brass-light);
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        .variant .notes {
+            font-size: 0.75rem;
+            color: var(--parchment-dark);
+            text-align: center;
+            line-height: 1.35;
+            min-height: 2.4em;
+        }
+
+        .variant-card-frame {
+            width: 170px;
+            height: 170px;
+            position: relative;
+        }
+
+        /* ========================================
+           Base Minion Card (trimmed copy of desktop.css)
+           ======================================== */
+        .minion-card {
+            border-radius: 5px;
+            position: relative;
+            aspect-ratio: 1 / 1;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 2px solid var(--brass-mid);
+            background: linear-gradient(180deg, #151210 0%, #0d0b08 100%);
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            transition: transform 0.3s ease;
+        }
+        .minion-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 1;
+            pointer-events: none;
+        }
+        .minion-card::after {
+            content: '';
+            position: absolute;
+            inset: 3px;
+            border: 1px solid rgba(201, 165, 92, 0.15);
+            border-radius: 2px;
+            pointer-events: none;
+            z-index: 2;
+        }
+        .minion-card > * { position: relative; z-index: 3; }
+
+        .minion-name {
+            position: absolute;
+            top: 0; left: 0;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            font-size: 0.6rem;
+            color: var(--parchment);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            background: rgba(13, 11, 8, 0.95);
+            border: 1px solid var(--brass-mid);
+            border-top: none; border-left: none;
+            border-radius: 0 0 4px 0;
+            padding: 3px 8px;
+            max-width: 65%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            z-index: 12;
+        }
+        .minion-tier {
+            position: absolute;
+            top: 0; right: 0;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            font-size: 0.7rem;
+            color: var(--gold-glow);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+            background: rgba(13, 11, 8, 0.95);
+            border: 1px solid var(--brass-mid);
+            border-top: none; border-right: none;
+            border-radius: 0 0 0 4px;
+            padding: 3px 8px;
+            z-index: 12;
+        }
+        .minion-stats-box {
+            position: absolute;
+            bottom: 0; left: 0;
+            display: flex;
+            border-radius: 0 4px 0 3px;
+            overflow: hidden;
+            z-index: 12;
+            background: linear-gradient(180deg, #0d0b08 0%, #080604 100%);
+            border-top: 1px solid var(--brass-mid);
+            border-right: 1px solid var(--brass-mid);
+        }
+        .minion-stats-box .stat {
+            padding: 3px 6px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--parchment);
+        }
+        .minion-stats-box .stat.attack { color: var(--brass-light); }
+        .minion-stats-box .stat.health { color: #e05555; }
+        .minion-tribe {
+            position: absolute;
+            bottom: 0; right: 0;
+            font-family: 'Cinzel', serif;
+            font-size: 0.55rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            color: var(--gold-glow);
+            background: rgba(13, 11, 8, 0.95);
+            border: 1px solid var(--brass-mid);
+            border-bottom: none; border-right: none;
+            border-radius: 4px 0 0 0;
+            padding: 3px 7px;
+            z-index: 12;
+        }
+
+        /* ========================================
+           Variant 1: CURRENT (baseline from desktop.css:1545)
+           ======================================== */
+        .minion-card.golden-v1 {
+            border-color: var(--gold-glow);
+            box-shadow:
+                0 4px 12px rgba(0,0,0,0.5),
+                0 0 15px rgba(255, 215, 0, 0.4);
+        }
+        .minion-card.golden-v1::before { background: rgba(255, 215, 0, 0.05); }
+        .minion-card.golden-v1::after { border-color: rgba(255, 235, 140, 0.25); }
+
+        /* ========================================
+           Variant 2: LAYERED HALO
+           Multi-layer box-shadow — warm gold close, pale far.
+           Richer without animation; tasteful and cheap.
+           ======================================== */
+        .minion-card.golden-v2 {
+            border-color: var(--gold-glow);
+            box-shadow:
+                0 4px 12px rgba(0,0,0,0.5),
+                0 0 0 1px rgba(255, 235, 140, 0.55),
+                0 0 10px 2px rgba(255, 200, 80, 0.55),
+                0 0 24px 4px rgba(255, 170, 40, 0.30),
+                0 0 48px 8px rgba(255, 140, 20, 0.15);
+        }
+        .minion-card.golden-v2::before {
+            background:
+                radial-gradient(ellipse at top,    rgba(255, 235, 160, 0.12), transparent 55%),
+                radial-gradient(ellipse at bottom, rgba(184, 134, 11, 0.18), transparent 55%),
+                rgba(0, 0, 0, 0.25);
+        }
+        .minion-card.golden-v2::after {
+            border-color: rgba(255, 235, 140, 0.55);
+            box-shadow: inset 0 0 10px rgba(255, 212, 117, 0.25);
+        }
+
+        /* ========================================
+           Variant 3: SHEEN SWEEP
+           A diagonal highlight slowly travels across the card.
+           Needs an extra element inside the card for the sweep.
+           ======================================== */
+        .minion-card.golden-v3 {
+            border-color: var(--gold-glow);
+            box-shadow:
+                0 4px 12px rgba(0,0,0,0.5),
+                0 0 12px rgba(255, 200, 80, 0.5),
+                inset 0 0 10px rgba(255, 212, 117, 0.15);
+        }
+        .minion-card.golden-v3::after {
+            border-color: rgba(255, 235, 140, 0.45);
+        }
+        .minion-card.golden-v3 .sheen {
+            position: absolute;
+            inset: 0;
+            z-index: 11;
+            pointer-events: none;
+            overflow: hidden;
+            border-radius: inherit;
+        }
+        .minion-card.golden-v3 .sheen::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -60%;
+            width: 40%; height: 200%;
+            background: linear-gradient(
+                110deg,
+                transparent 0%,
+                rgba(255, 245, 200, 0.00) 35%,
+                rgba(255, 245, 200, 0.45) 50%,
+                rgba(255, 245, 200, 0.00) 65%,
+                transparent 100%
+            );
+            transform: rotate(18deg);
+            animation: sheen-sweep 3.5s ease-in-out infinite;
+        }
+        @keyframes sheen-sweep {
+            0%   { transform: translateX(0)    rotate(18deg); opacity: 0; }
+            15%  { opacity: 1; }
+            85%  { opacity: 1; }
+            100% { transform: translateX(420%) rotate(18deg); opacity: 0; }
+        }
+
+        /* ========================================
+           Variant 4: ROTATING CONIC BORDER
+           Animated conic-gradient ring. Uses a mask trick so the
+           gradient shows only as a border, not the whole surface.
+           @property lets us animate the angle without JS.
+           ======================================== */
+        @property --golden-angle {
+            syntax: '<angle>';
+            initial-value: 0deg;
+            inherits: false;
+        }
+        .minion-card.golden-v4 {
+            border: 2px solid transparent;
+            background:
+                linear-gradient(180deg, #151210 0%, #0d0b08 100%) padding-box,
+                conic-gradient(
+                    from var(--golden-angle),
+                    #b8860b,
+                    #ffe9a0,
+                    #ffd475,
+                    #b8860b,
+                    #ffe9a0,
+                    #b8860b
+                ) border-box;
+            animation: golden-rotate 6s linear infinite;
+            box-shadow:
+                0 4px 12px rgba(0,0,0,0.5),
+                0 0 18px rgba(255, 200, 80, 0.45);
+        }
+        .minion-card.golden-v4::after {
+            border-color: rgba(255, 235, 140, 0.4);
+        }
+        @keyframes golden-rotate {
+            to { --golden-angle: 360deg; }
+        }
+
+        /* ========================================
+           Variant 5: ART DECO CORNERS
+           Four gold corner flourishes + warm halo.
+           Matches the existing Cinzel/brass theme.
+           ======================================== */
+        .minion-card.golden-v5 {
+            border-color: var(--gold-glow);
+            box-shadow:
+                0 4px 12px rgba(0,0,0,0.5),
+                0 0 14px rgba(255, 200, 80, 0.5);
+        }
+        .minion-card.golden-v5::before {
+            background:
+                radial-gradient(ellipse at center, transparent 40%, rgba(184, 134, 11, 0.22) 100%),
+                rgba(0, 0, 0, 0.25);
+        }
+        .minion-card.golden-v5::after {
+            /* Double frame — outer brass inset plus cross-pattern corners */
+            inset: 5px;
+            border: 1px solid rgba(255, 212, 117, 0.55);
+            background:
+                linear-gradient(135deg, var(--gold-glow) 0 8px, transparent 8px) top left / 16px 16px no-repeat,
+                linear-gradient(225deg, var(--gold-glow) 0 8px, transparent 8px) top right / 16px 16px no-repeat,
+                linear-gradient( 45deg, var(--gold-glow) 0 8px, transparent 8px) bottom left / 16px 16px no-repeat,
+                linear-gradient(315deg, var(--gold-glow) 0 8px, transparent 8px) bottom right / 16px 16px no-repeat;
+            mask:
+                linear-gradient(#000, #000) content-box,
+                linear-gradient(#000, #000);
+            mask-composite: exclude;
+            -webkit-mask-composite: xor;
+            padding: 2px;
+        }
+
+        /* ========================================
+           Variant 6: FULL (recommended)
+           Layered halo + subtle image tint + slow pulse.
+           ======================================== */
+        .minion-card.golden-v6 {
+            border-color: var(--gold-glow);
+            animation: golden-pulse 3s ease-in-out infinite;
+        }
+        .minion-card.golden-v6::before {
+            background:
+                radial-gradient(ellipse at top,    rgba(255, 235, 160, 0.14), transparent 60%),
+                radial-gradient(ellipse at bottom, rgba(184, 134, 11, 0.22), transparent 60%),
+                rgba(0, 0, 0, 0.25);
+            mix-blend-mode: normal;
+        }
+        .minion-card.golden-v6::after {
+            border-color: rgba(255, 235, 140, 0.6);
+            box-shadow:
+                inset 0 0 8px rgba(255, 212, 117, 0.35),
+                inset 0 0 24px rgba(184, 134, 11, 0.12);
+        }
+        @keyframes golden-pulse {
+            0%, 100% {
+                box-shadow:
+                    0 4px 12px rgba(0,0,0,0.5),
+                    0 0 0 1px rgba(255, 235, 140, 0.5),
+                    0 0 14px 2px rgba(255, 200, 80, 0.45),
+                    0 0 28px 4px rgba(255, 170, 40, 0.20);
+            }
+            50% {
+                box-shadow:
+                    0 4px 12px rgba(0,0,0,0.5),
+                    0 0 0 1px rgba(255, 235, 140, 0.7),
+                    0 0 20px 3px rgba(255, 200, 80, 0.65),
+                    0 0 40px 6px rgba(255, 170, 40, 0.30);
+            }
+        }
+
+        /* ========================================
+           Golden indicator — replacement sketch
+           Small star badge instead of "Golden" pill.
+           ======================================== */
+        .golden-star {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 18px;
+            height: 18px;
+            z-index: 13;
+            filter: drop-shadow(0 0 3px rgba(255, 212, 117, 0.9));
+            pointer-events: none;
+        }
+        .golden-star svg {
+            width: 100%;
+            height: 100%;
+            fill: var(--gold-glow);
+            stroke: var(--gold-deep);
+            stroke-width: 1.2;
+        }
+
+        /* Divider + big final showcase */
+        .showcase {
+            max-width: 1400px;
+            margin: 60px auto 0;
+            padding: 30px 20px;
+            background: linear-gradient(180deg, var(--wood-mid) 0%, var(--wood-dark) 100%);
+            border: 1px solid var(--brass-dark);
+            border-radius: 10px;
+            position: relative; z-index: 1;
+        }
+        .showcase h2 {
+            font-family: 'Cinzel', serif;
+            color: var(--brass-light);
+            text-align: center;
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            margin-bottom: 24px;
+            text-transform: uppercase;
+        }
+        .showcase-row {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .showcase-card {
+            width: 200px;
+            height: 200px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Golden Minion Visual Examples</h1>
+    <p class="subtitle">Candidate glows for <code>.minion-card.golden</code>. Pick one; roll it into <code>desktop.css</code>.</p>
+
+    <div class="variants-grid">
+
+        <div class="variant">
+            <h2>V1 — Current (baseline)</h2>
+            <div class="variant-card-frame">
+                <div class="minion-card golden-v1"
+                     style="background-image: url('images/original/bear.png');">
+                    <div class="minion-name">Bear</div>
+                    <div class="minion-tier">II</div>
+                    <div class="minion-tribe">Beast</div>
+                    <div class="minion-stats-box">
+                        <span class="stat attack">⚔ 6</span>
+                        <span class="stat health">❤ 6</span>
+                    </div>
+                </div>
+            </div>
+            <p class="notes">What's in the game today. Single flat drop-shadow, pale yellow border. Static.</p>
+        </div>
+
+        <div class="variant">
+            <h2>V2 — Layered Halo</h2>
+            <div class="variant-card-frame">
+                <div class="minion-card golden-v2"
+                     style="background-image: url('images/original/Apprentice.png');">
+                    <div class="minion-name">Apprentice</div>
+                    <div class="minion-tier">I</div>
+                    <div class="minion-tribe">Mage</div>
+                    <div class="minion-stats-box">
+                        <span class="stat attack">⚔ 2</span>
+                        <span class="stat health">❤ 2</span>
+                    </div>
+                </div>
+            </div>
+            <p class="notes">Static. Three stacked glow rings (warm→soft) plus a subtle vertical gold wash inside.</p>
+        </div>
+
+        <div class="variant">
+            <h2>V3 — Sheen Sweep</h2>
+            <div class="variant-card-frame">
+                <div class="minion-card golden-v3"
+                     style="background-image: url('images/original/paladin.png');">
+                    <div class="sheen"></div>
+                    <div class="minion-name">Paladin</div>
+                    <div class="minion-tier">III</div>
+                    <div class="minion-tribe">Human</div>
+                    <div class="minion-stats-box">
+                        <span class="stat attack">⚔ 5</span>
+                        <span class="stat health">❤ 7</span>
+                    </div>
+                </div>
+            </div>
+            <p class="notes">Animated diagonal shine sweeps across every ~3.5s. Cheap GPU cost; reads clearly as "shiny".</p>
+        </div>
+
+        <div class="variant">
+            <h2>V4 — Rotating Border</h2>
+            <div class="variant-card-frame">
+                <div class="minion-card golden-v4"
+                     style="background-image: url('images/original/wizard.png');">
+                    <div class="minion-name">Wizard</div>
+                    <div class="minion-tier">IV</div>
+                    <div class="minion-tribe">Mage</div>
+                    <div class="minion-stats-box">
+                        <span class="stat attack">⚔ 4</span>
+                        <span class="stat health">❤ 4</span>
+                    </div>
+                </div>
+            </div>
+            <p class="notes">Conic-gradient border rotates continuously. Flashy — may feel busy with many cards on screen.</p>
+        </div>
+
+        <div class="variant">
+            <h2>V5 — Deco Corners</h2>
+            <div class="variant-card-frame">
+                <div class="minion-card golden-v5"
+                     style="background-image: url('images/original/king.png');">
+                    <div class="minion-name">King</div>
+                    <div class="minion-tier">V</div>
+                    <div class="minion-tribe">Human</div>
+                    <div class="minion-stats-box">
+                        <span class="stat attack">⚔ 8</span>
+                        <span class="stat health">❤ 8</span>
+                    </div>
+                </div>
+            </div>
+            <p class="notes">Static. Four gold corner flourishes in the Art Deco style already used elsewhere in UI.</p>
+        </div>
+
+        <div class="variant">
+            <h2>V6 — Full (recommended)</h2>
+            <div class="variant-card-frame">
+                <div class="minion-card golden-v6"
+                     style="background-image: url('images/original/dullahan.png');">
+                    <span class="golden-star">
+                        <svg viewBox="0 0 24 24"><path d="M12 2 14.9 8.6 22 9.3l-5.3 4.9L18.3 22 12 18.3 5.7 22l1.6-7.8L2 9.3l7.1-.7z"/></svg>
+                    </span>
+                    <div class="minion-name">Dullahan</div>
+                    <div class="minion-tier">VI</div>
+                    <div class="minion-tribe">Undead</div>
+                    <div class="minion-stats-box">
+                        <span class="stat attack">⚔ 9</span>
+                        <span class="stat health">❤ 9</span>
+                    </div>
+                </div>
+            </div>
+            <p class="notes">Layered halo + inner gold frame + slow pulse + a star badge replacing the old yellow pill.</p>
+        </div>
+
+    </div>
+
+    <!-- Large-format side-by-side at combat-card size -->
+    <div class="showcase">
+        <h2>Showcase — Full Size Comparison</h2>
+        <div class="showcase-row">
+            <div class="showcase-card">
+                <div class="minion-card golden-v1"
+                     style="background-image: url('images/original/werewolf.png');">
+                    <div class="minion-name">Werewolf</div>
+                    <div class="minion-tier">III</div>
+                    <div class="minion-tribe">Beast</div>
+                    <div class="minion-stats-box">
+                        <span class="stat attack">⚔ 5</span>
+                        <span class="stat health">❤ 4</span>
+                    </div>
+                </div>
+            </div>
+            <div class="showcase-card">
+                <div class="minion-card golden-v2"
+                     style="background-image: url('images/original/werewolf.png');">
+                    <div class="minion-name">Werewolf</div>
+                    <div class="minion-tier">III</div>
+                    <div class="minion-tribe">Beast</div>
+                    <div class="minion-stats-box">
+                        <span class="stat attack">⚔ 10</span>
+                        <span class="stat health">❤ 8</span>
+                    </div>
+                </div>
+            </div>
+            <div class="showcase-card">
+                <div class="minion-card golden-v6"
+                     style="background-image: url('images/original/werewolf.png');">
+                    <span class="golden-star">
+                        <svg viewBox="0 0 24 24"><path d="M12 2 14.9 8.6 22 9.3l-5.3 4.9L18.3 22 12 18.3 5.7 22l1.6-7.8L2 9.3l7.1-.7z"/></svg>
+                    </span>
+                    <div class="minion-name">Werewolf</div>
+                    <div class="minion-tier">III</div>
+                    <div class="minion-tribe">Beast</div>
+                    <div class="minion-stats-box">
+                        <span class="stat attack">⚔ 10</span>
+                        <span class="stat health">❤ 8</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

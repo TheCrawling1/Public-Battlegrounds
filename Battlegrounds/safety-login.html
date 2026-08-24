@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto Battler Arena — Access</title>
+
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #0a0a0f;
+            background-image:
+                radial-gradient(ellipse at 20% 50%, rgba(40, 20, 60, 0.4) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, rgba(20, 40, 60, 0.3) 0%, transparent 50%);
+            font-family: Georgia, 'Times New Roman', serif;
+            color: #c8b89a;
+        }
+
+        .gate-card {
+            width: 100%;
+            max-width: 420px;
+            padding: 48px 40px;
+            background: linear-gradient(160deg, rgba(25, 20, 35, 0.98) 0%, rgba(15, 12, 22, 0.98) 100%);
+            border: 1px solid rgba(180, 150, 80, 0.3);
+            border-radius: 4px;
+            box-shadow:
+                0 0 60px rgba(0, 0, 0, 0.8),
+                inset 0 1px 0 rgba(180, 150, 80, 0.1);
+            text-align: center;
+        }
+
+        .gate-card::before {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(180, 150, 80, 0.6), transparent);
+            margin: 0 auto 32px;
+        }
+
+        h1 {
+            font-family: 'Trajan Pro', 'Times New Roman', serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #d4af5a;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .subtitle {
+            font-size: 0.95rem;
+            color: rgba(200, 184, 154, 0.6);
+            letter-spacing: 0.05em;
+            margin-bottom: 40px;
+        }
+
+        label {
+            display: block;
+            font-family: 'Trajan Pro', 'Times New Roman', serif;
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: rgba(200, 184, 154, 0.7);
+            margin-bottom: 10px;
+            text-align: left;
+        }
+
+        input[type="password"] {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(180, 150, 80, 0.25);
+            border-radius: 2px;
+            color: #c8b89a;
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 1.05rem;
+            letter-spacing: 0.1em;
+            outline: none;
+            transition: border-color 0.2s;
+            margin-bottom: 24px;
+        }
+
+        input[type="password"]:focus {
+            border-color: rgba(180, 150, 80, 0.6);
+            background: rgba(0, 0, 0, 0.55);
+        }
+
+        input[type="password"]::placeholder {
+            color: rgba(200, 184, 154, 0.25);
+            letter-spacing: 0.05em;
+        }
+
+        button {
+            width: 100%;
+            padding: 13px 24px;
+            background: linear-gradient(135deg, rgba(180, 150, 60, 0.15) 0%, rgba(140, 110, 40, 0.1) 100%);
+            border: 1px solid rgba(180, 150, 80, 0.5);
+            border-radius: 2px;
+            color: #d4af5a;
+            font-family: 'Trajan Pro', 'Times New Roman', serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s, color 0.2s;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, rgba(180, 150, 60, 0.3) 0%, rgba(140, 110, 40, 0.2) 100%);
+            border-color: rgba(180, 150, 80, 0.8);
+            color: #e8c870;
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .error-msg {
+            margin-top: 16px;
+            padding: 10px 14px;
+            background: rgba(180, 40, 40, 0.15);
+            border: 1px solid rgba(180, 40, 40, 0.3);
+            border-radius: 2px;
+            color: #e07070;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .gate-card::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(180, 150, 80, 0.4), transparent);
+            margin: 32px auto 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="gate-card">
+    <h1>Auto Battler Arena</h1>
+    <p class="subtitle">Beta Access</p>
+
+    <label for="accessCode">Access Code</label>
+    <input type="password" id="accessCode" placeholder="Enter access code" autocomplete="off" />
+
+    <button id="submitBtn" onclick="verifyAccess()">Enter</button>
+
+    <div class="error-msg" id="errorMsg"></div>
+</div>
+
+<script>
+    async function verifyAccess() {
+        const code = document.getElementById('accessCode').value;
+        const errorDiv = document.getElementById('errorMsg');
+        const btn = document.getElementById('submitBtn');
+
+        if (!code) {
+            errorDiv.textContent = 'Please enter the access code.';
+            errorDiv.style.display = 'block';
+            return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = 'Verifying...';
+        errorDiv.style.display = 'none';
+
+        try {
+            const response = await fetch('/api/safety/verify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ password: code })
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                // Redirect to main game — normal account login is there
+                window.location.href = '/';
+            } else {
+                errorDiv.textContent = data.error || 'Invalid access code.';
+                errorDiv.style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = 'Enter';
+                document.getElementById('accessCode').value = '';
+                document.getElementById('accessCode').focus();
+            }
+        } catch (err) {
+            errorDiv.textContent = 'Connection error. Is the server running?';
+            errorDiv.style.display = 'block';
+            btn.disabled = false;
+            btn.textContent = 'Enter';
+        }
+    }
+
+    document.getElementById('accessCode').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') verifyAccess();
+    });
+
+    // Auto-focus the input
+    document.getElementById('accessCode').focus();
+</script>
+
+</body>
+</html>

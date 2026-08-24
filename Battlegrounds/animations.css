@@ -1,0 +1,979 @@
+/* Combat Animation System CSS - All animation styles consolidated here */
+
+/* GLOW ANIMATION STYLES - FIXED to use outline instead of drop-shadow to preserve UI elements */
+.animation-glow {
+    position: relative;
+    /* Don't interfere with existing transitions */
+}
+
+.animation-glow.glow-active {
+    /* Use outline instead of box-shadow - doesn't affect layout or z-index */
+    outline: 2px solid currentColor;
+    outline-offset: 4px;
+}
+
+.animation-glow.glow-high {
+    outline: 3px solid currentColor;
+    outline-offset: 6px;
+}
+
+.animation-glow.glow-pulse {
+    animation: glow-pulse 1s ease-in-out infinite alternate;
+}
+
+.animation-glow.glow-pulse-fast {
+    animation: glow-pulse 0.5s ease-in-out infinite alternate;
+}
+
+.animation-glow.glow-pulse-stun {
+    animation: glow-pulse-stun 1.5s ease-in-out infinite;
+}
+
+/* DEATH ANIMATION STYLES - ENHANCED for better visibility */
+.animation-death-fade {
+    transition: all 0.8s ease-out;
+}
+
+.animation-death-fade.death-active {
+    opacity: 0.2;  /* More dramatic fade - was 0.3 */
+    filter: grayscale(1) brightness(0.3) contrast(0.7);  /* Enhanced death effect */
+    transform: scale(0.95);  /* Slight shrink effect */
+}
+
+/* MOVE ANIMATION STYLES */
+.animation-move-highlight {
+    transition: all 0.6s ease;
+    position: relative;
+}
+
+.animation-move-highlight.move-active {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
+}
+
+/* ANIMATION KEYFRAMES - UPDATED to use outline */
+@keyframes glow-pulse {
+    from {
+        outline: 2px solid currentColor;
+        outline-offset: 4px;
+    }
+    to {
+        outline: 4px solid currentColor;
+        outline-offset: 8px;
+    }
+}
+
+@keyframes glow-pulse-stun {
+    0% {
+        outline: 1px solid #FFAA44;
+        outline-offset: 2px;
+    }
+    25% {
+        outline: 3px solid #FFAA44;
+        outline-offset: 6px;
+    }
+    50% {
+        outline: 2px solid #FFAA44;
+        outline-offset: 4px;
+    }
+    75% {
+        outline: 4px solid #FFAA44;
+        outline-offset: 7px;
+    }
+    100% {
+        outline: 1px solid #FFAA44;
+        outline-offset: 2px;
+    }
+}
+
+/* ANIMATION CONTROL CLASSES */
+.animation-paused {
+    animation-play-state: paused !important;
+}
+
+.animation-running {
+    animation-play-state: running !important;
+}
+
+/* Attack animation class - disables CSS transitions during programmatic movement */
+.attack-animating {
+    transition: none !important;
+}
+
+/* NEW: LIGHTNING BOLT ANIMATION STYLES */
+.lightning-bolt {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10000;
+    /* Transition for smooth appearance/disappearance */
+    transition: opacity 0.1s ease-in-out;
+}
+
+/* Lightning bolt path styling enhancement */
+.lightning-bolt path {
+    /* Enhanced glow effect for lightning */
+    filter: drop-shadow(0 0 3px currentColor) drop-shadow(0 0 6px currentColor);
+    /* Smooth line joins for better lightning appearance */
+    stroke-linejoin: round;
+    stroke-linecap: round;
+}
+
+/* Lightning bolt flickering animation */
+.lightning-bolt.flickering path {
+    animation: lightning-flicker 0.1s infinite alternate;
+}
+
+@keyframes lightning-flicker {
+    0% {
+        opacity: 0.3;
+        stroke-width: 1px;
+    }
+    25% {
+        opacity: 1;
+        stroke-width: 2px;
+    }
+    50% {
+        opacity: 0.6;
+        stroke-width: 1.5px;
+    }
+    75% {
+        opacity: 1;
+        stroke-width: 2px;
+    }
+    100% {
+        opacity: 0.4;
+        stroke-width: 1px;
+    }
+}
+
+/* Lightning impact flash effect */
+.lightning-impact {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, transparent 70%);
+    animation: lightning-impact-flash 0.2s ease-out;
+    pointer-events: none;
+    z-index: 9999;
+}
+
+@keyframes lightning-impact-flash {
+    0% {
+        transform: scale(0);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.5);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(3);
+        opacity: 0;
+    }
+}
+
+/* WIZARD BOLT ANIMATION STYLES (Legacy support) */
+.wizard-bolt {
+    position: fixed;
+    background: linear-gradient(90deg, transparent, #00BFFF, #87CEEB, #00BFFF, transparent);
+    border-radius: 2px;
+    box-shadow:
+        0 0 10px #00BFFF,
+        0 0 20px #00BFFF,
+        0 0 30px rgba(0, 191, 255, 0.5);
+    z-index: 10000;
+    pointer-events: none;
+    /* FIXED: Remove animation that was causing position issues */
+    transition: opacity 0.2s ease-in-out;
+    transform-origin: 0 50%; /* Ensure rotation happens from start point */
+}
+
+/* Subtle pulse effect for active bolts */
+.wizard-bolt.active {
+    animation: wizard-bolt-glow 0.4s ease-in-out;
+}
+
+@keyframes wizard-bolt-glow {
+    0% {
+        box-shadow: 0 0 5px #00BFFF;
+    }
+    50% {
+        box-shadow: 0 0 25px #00BFFF, 0 0 35px #87CEEB;
+    }
+    100% {
+        box-shadow: 0 0 10px #00BFFF;
+    }
+}
+
+/* COMBAT-SPECIFIC VISUAL EFFECTS */
+.minion-card.dead {
+    opacity: 0.3;
+    filter: grayscale(1);
+    border-color: #666;
+}
+
+.minion-card.active {
+    border-color: #FFD700;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+    animation: pulse-glow 2s ease-in-out infinite alternate;
+}
+
+/* DAMAGE/HEAL NUMBER ANIMATIONS */
+.damage-number {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #FF4444;
+    font-weight: bold;
+    font-size: 1.2rem;
+    pointer-events: none;
+    z-index: 1000;
+    animation: damage-number-float 1s ease-out forwards;
+}
+
+.heal-number {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #44FF44;
+    font-weight: bold;
+    font-size: 1.2rem;
+    pointer-events: none;
+    z-index: 1000;
+    animation: heal-number-float 1s ease-out forwards;
+}
+
+.buff-indicator {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #4444FF;
+    font-weight: bold;
+    font-size: 0.9rem;
+    pointer-events: none;
+    z-index: 1000;
+    animation: buff-indicator-float 1.5s ease-out forwards;
+}
+
+.debuff-indicator {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #AA44AA;
+    font-weight: bold;
+    font-size: 0.9rem;
+    pointer-events: none;
+    z-index: 1000;
+    animation: debuff-indicator-float 1.5s ease-out forwards;
+}
+
+.permanent-indicator {
+    position: absolute;
+    top: 25%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #FFD700;
+    font-weight: bold;
+    font-size: 0.8rem;
+    pointer-events: none;
+    z-index: 1000;
+    animation: permanent-indicator-float 2s ease-out forwards;
+}
+
+.stun-indicator {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #FFAA44;
+    font-weight: bold;
+    font-size: 0.9rem;
+    pointer-events: none;
+    z-index: 1000;
+    animation: stun-indicator-float 2s ease-out forwards;
+}
+
+.keyword-indicator {
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #76FF03;
+    font-weight: bold;
+    font-size: 0.8rem;
+    pointer-events: none;
+    z-index: 1000;
+    animation: keyword-indicator-float 1.5s ease-out forwards;
+}
+
+.multi-attack-indicator {
+    position: absolute;
+    top: 20%;
+    right: 10%;
+    color: #FF9800;
+    font-weight: bold;
+    font-size: 1.1rem;
+    pointer-events: none;
+    z-index: 1000;
+    animation: multi-attack-pulse 2s ease-in-out forwards;
+}
+
+/* INDICATOR ANIMATION KEYFRAMES */
+@keyframes damage-number-float {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: translate(-50%, -70%) scale(1.2);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -90%) scale(0.8);
+    }
+}
+
+@keyframes heal-number-float {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: translate(-50%, -30%) scale(1.2);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -10%) scale(0.8);
+    }
+}
+
+@keyframes buff-indicator-float {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(0.8);
+    }
+    30% {
+        opacity: 1;
+        transform: translate(-50%, -60%) scale(1.1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -80%) scale(0.7);
+    }
+}
+
+@keyframes debuff-indicator-float {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(0.8);
+    }
+    30% {
+        opacity: 1;
+        transform: translate(-50%, -40%) scale(1.1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -20%) scale(0.7);
+    }
+}
+
+@keyframes permanent-indicator-float {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(0.8);
+    }
+    40% {
+        opacity: 1;
+        transform: translate(-50%, -65%) scale(1.2);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -85%) scale(0.6);
+    }
+}
+
+@keyframes stun-indicator-float {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(0.9);
+    }
+    50% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.9);
+    }
+}
+
+@keyframes keyword-indicator-float {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(0.8);
+    }
+    40% {
+        opacity: 1;
+        transform: translate(-50%, -60%) scale(1.1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -75%) scale(0.7);
+    }
+}
+
+@keyframes multi-attack-pulse {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    25% {
+        opacity: 1;
+        transform: scale(1.3);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+    75% {
+        opacity: 1;
+        transform: scale(1.2);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+}
+
+/* TRIGGER ANIMATION CLASSES */
+.minion-card.trigger-assault {
+    animation: trigger-assault-glow 0.8s ease-out;
+}
+
+.minion-card.trigger-cast {
+    animation: trigger-cast-glow 0.8s ease-out;
+}
+
+.minion-card.trigger-death_toll {
+    animation: trigger-death-toll-glow 0.8s ease-out;
+}
+
+.minion-card.trigger-rage {
+    animation: trigger-rage-glow 0.8s ease-out;
+}
+
+.minion-card.trigger-on_any_death {
+    animation: trigger-on-any-death-glow 0.8s ease-out;
+}
+
+.minion-card.trigger-on_any_cast {
+    animation: trigger-on-any-cast-glow 0.8s ease-out;
+}
+
+.minion-card.trigger-on_any_summon {
+    animation: trigger-on-any-summon-glow 0.8s ease-out;
+}
+
+/* TRIGGER GLOW KEYFRAMES */
+@keyframes trigger-assault-glow {
+    0% { outline: 0px solid #FF8844; outline-offset: 0px; }
+    50% { outline: 4px solid #FF8844; outline-offset: 8px; }
+    100% { outline: 0px solid #FF8844; outline-offset: 0px; }
+}
+
+@keyframes trigger-cast-glow {
+    0% { outline: 0px solid #FFFFFF; outline-offset: 0px; }  /* White for lightning cast */
+    50% { outline: 4px solid #FFFFFF; outline-offset: 8px; }
+    100% { outline: 0px solid #FFFFFF; outline-offset: 0px; }
+}
+
+@keyframes trigger-death-toll-glow {
+    0% { outline: 0px solid #444444; outline-offset: 0px; }
+    50% { outline: 4px solid #444444; outline-offset: 8px; }
+    100% { outline: 0px solid #444444; outline-offset: 0px; }
+}
+
+@keyframes trigger-rage-glow {
+    0% { outline: 0px solid #FF4444; outline-offset: 0px; }
+    50% { outline: 4px solid #FF4444; outline-offset: 8px; }
+    100% { outline: 0px solid #FF4444; outline-offset: 0px; }
+}
+
+@keyframes trigger-on-any-death-glow {
+    0% { outline: 0px solid #666666; outline-offset: 0px; }
+    50% { outline: 4px solid #666666; outline-offset: 8px; }
+    100% { outline: 0px solid #666666; outline-offset: 0px; }
+}
+
+@keyframes trigger-on-any-cast-glow {
+    0% { outline: 0px solid #8844FF; outline-offset: 0px; }
+    50% { outline: 4px solid #8844FF; outline-offset: 8px; }
+    100% { outline: 0px solid #8844FF; outline-offset: 0px; }
+}
+
+@keyframes trigger-on-any-summon-glow {
+    0% { outline: 0px solid #44AA44; outline-offset: 0px; }
+    50% { outline: 4px solid #44AA44; outline-offset: 8px; }
+    100% { outline: 0px solid #44AA44; outline-offset: 0px; }
+}
+
+/* COMBAT ZONE EFFECTS */
+.combat-zone.fatigue-damage {
+    animation: fatigue-flash 1s ease-out;
+}
+
+@keyframes fatigue-flash {
+    0% { background: linear-gradient(135deg, rgba(244, 67, 54, 0.2), rgba(156, 39, 176, 0.3)); }
+    50% { background: linear-gradient(135deg, rgba(244, 67, 54, 0.6), rgba(156, 39, 176, 0.7)); }
+    100% { background: linear-gradient(135deg, rgba(244, 67, 54, 0.2), rgba(156, 39, 176, 0.3)); }
+}
+
+/* BAND EFFECTS */
+.combat-minions.summoning {
+    animation: summoning-flash 0.8s ease-out;
+}
+
+@keyframes summoning-flash {
+    0% { background: rgba(255,255,255,0.1); }
+    50% { background: rgba(255, 255, 68, 0.3); }
+    100% { background: rgba(255,255,255,0.1); }
+}
+
+/* COMBAT STATE CLASSES */
+.minion-card.attacking {
+    animation: attacking-highlight 0.5s ease-out;
+}
+
+.minion-card.defending {
+    animation: defending-highlight 0.5s ease-out;
+}
+
+.minion-card.damaged {
+    animation: damage-flash 1s ease-out;
+}
+
+.minion-card.healed {
+    animation: heal-flash 1s ease-out;
+}
+
+.minion-card.buffed {
+    animation: buff-flash 1.5s ease-out;
+}
+
+.minion-card.debuffed {
+    animation: debuff-flash 1.5s ease-out;
+}
+
+.minion-card.permanent-gain {
+    animation: permanent-gain-flash 2s ease-out;
+}
+
+.minion-card.keyword-gained {
+    animation: keyword-gain-flash 1.5s ease-out;
+}
+
+.minion-card.moving {
+    animation: move-highlight 0.6s ease-out;
+}
+
+.minion-card.stunned {
+    animation: stun-flash 1.5s ease-out;
+}
+
+/* COMBAT STATE KEYFRAMES */
+@keyframes attacking-highlight {
+    0% { outline: 0px solid #FFD700; outline-offset: 0px; }
+    50% { outline: 3px solid #FFD700; outline-offset: 6px; }
+    100% { outline: 0px solid #FFD700; outline-offset: 0px; }
+}
+
+@keyframes defending-highlight {
+    0% { outline: 0px solid #2196F3; outline-offset: 0px; }
+    50% { outline: 3px solid #2196F3; outline-offset: 6px; }
+    100% { outline: 0px solid #2196F3; outline-offset: 0px; }
+}
+
+@keyframes damage-flash {
+    0% { outline: 0px solid #FF4444; outline-offset: 0px; }
+    30% { outline: 3px solid #FF4444; outline-offset: 5px; }
+    100% { outline: 0px solid #FF4444; outline-offset: 0px; }
+}
+
+@keyframes heal-flash {
+    0% { outline: 0px solid #44FF44; outline-offset: 0px; }
+    30% { outline: 3px solid #44FF44; outline-offset: 5px; }
+    100% { outline: 0px solid #44FF44; outline-offset: 0px; }
+}
+
+@keyframes buff-flash {
+    0% { outline: 0px solid #4444FF; outline-offset: 0px; }
+    40% { outline: 3px solid #4444FF; outline-offset: 6px; }
+    100% { outline: 0px solid #4444FF; outline-offset: 0px; }
+}
+
+@keyframes debuff-flash {
+    0% { outline: 0px solid #AA44AA; outline-offset: 0px; }
+    40% { outline: 3px solid #AA44AA; outline-offset: 6px; }
+    100% { outline: 0px solid #AA44AA; outline-offset: 0px; }
+}
+
+@keyframes permanent-gain-flash {
+    0% { outline: 0px solid #FFD700; outline-offset: 0px; }
+    50% { outline: 4px solid #FFD700; outline-offset: 8px; }
+    100% { outline: 0px solid #FFD700; outline-offset: 0px; }
+}
+
+@keyframes keyword-gain-flash {
+    0% { outline: 0px solid #76FF03; outline-offset: 0px; }
+    40% { outline: 3px solid #76FF03; outline-offset: 6px; }
+    100% { outline: 0px solid #76FF03; outline-offset: 0px; }
+}
+
+@keyframes move-highlight {
+    0% { outline: 0px solid #44AAFF; outline-offset: 0px; }
+    50% { outline: 3px solid #44AAFF; outline-offset: 6px; }
+    100% { outline: 0px solid #44AAFF; outline-offset: 0px; }
+}
+
+@keyframes stun-flash {
+    0% { outline: 0px solid #FFAA44; outline-offset: 0px; }
+    50% { outline: 3px solid #FFAA44; outline-offset: 6px; }
+    100% { outline: 0px solid #FFAA44; outline-offset: 0px; }
+}
+
+@keyframes pulse-glow {
+    from {
+        box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+        border-color: #FFD700;
+    }
+    to {
+        box-shadow: 0 0 25px rgba(255, 215, 0, 0.8);
+        border-color: #FFED4E;
+    }
+}
+
+/* NEW: TEMPLATE ANIMATION STYLES */
+.template-line {
+    position: fixed;
+    background: linear-gradient(90deg, transparent, currentColor, currentColor, transparent);
+    border-radius: 2px;
+    z-index: 10000;
+    pointer-events: none;
+    transition: opacity 0.2s ease-in-out;
+    transform-origin: 0 50%;
+}
+
+.template-line.active {
+    animation: template-line-glow 0.4s ease-in-out;
+}
+
+@keyframes template-line-glow {
+    0% {
+        filter: brightness(1);
+    }
+    50% {
+        filter: brightness(1.5);
+    }
+    100% {
+        filter: brightness(1);
+    }
+}
+
+.template-glow {
+    position: relative;
+}
+
+.template-glow.glow-active {
+    outline: 2px solid var(--template-glow-color, currentColor);
+    outline-offset: 4px;
+}
+
+.template-glow.glow-high {
+    outline: 3px solid var(--template-glow-color, currentColor);
+    outline-offset: 6px;
+}
+
+.template-flash {
+    position: relative;
+    animation: template-flash-effect 0.3s ease-out;
+}
+
+@keyframes template-flash-effect {
+    0% {
+        outline: 0px solid var(--template-flash-color, #FFFFFF);
+        outline-offset: 0px;
+    }
+    50% {
+        outline: 4px solid var(--template-flash-color, #FFFFFF);
+        outline-offset: 8px;
+    }
+    100% {
+        outline: 0px solid var(--template-flash-color, #FFFFFF);
+        outline-offset: 0px;
+    }
+}
+
+.template-pulse {
+    animation: template-pulse-effect 0.5s ease-in-out;
+}
+
+@keyframes template-pulse-effect {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.template-particle {
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.particle-sparkle {
+    background: radial-gradient(circle, currentColor 0%, transparent 70%);
+    animation: particle-sparkle-twinkle 0.5s ease-out;
+}
+
+@keyframes particle-sparkle-twinkle {
+    0% {
+        transform: scale(0) rotate(0deg);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.2) rotate(180deg);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(0) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* NEW: ENHANCED LIGHTNING-SPECIFIC STYLES */
+
+/* Lightning bolt wizard cast glow - enhanced for lightning theme */
+.minion-card.lightning-caster {
+    animation: lightning-caster-glow 0.8s ease-out;
+}
+
+@keyframes lightning-caster-glow {
+    0% {
+        outline: 0px solid #FFFFFF;
+        outline-offset: 0px;
+        filter: brightness(1);
+    }
+    25% {
+        outline: 2px solid #FFFFFF;
+        outline-offset: 4px;
+        filter: brightness(1.2);
+    }
+    50% {
+        outline: 4px solid #FFFFFF;
+        outline-offset: 8px;
+        filter: brightness(1.4);
+    }
+    75% {
+        outline: 3px solid #DDDDFF;
+        outline-offset: 6px;
+        filter: brightness(1.2);
+    }
+    100% {
+        outline: 0px solid #FFFFFF;
+        outline-offset: 0px;
+        filter: brightness(1);
+    }
+}
+
+/* Lightning impact effects on targets */
+.minion-card.lightning-struck {
+    animation: lightning-struck-flash 0.6s ease-out;
+}
+
+@keyframes lightning-struck-flash {
+    0% {
+        outline: 0px solid #FFFFFF;
+        outline-offset: 0px;
+        filter: brightness(1);
+    }
+    15% {
+        outline: 3px solid #FFFFFF;
+        outline-offset: 6px;
+        filter: brightness(1.5);
+    }
+    30% {
+        outline: 2px solid #DDDDFF;
+        outline-offset: 4px;
+        filter: brightness(1.3);
+    }
+    50% {
+        outline: 3px solid #FFFFFF;
+        outline-offset: 6px;
+        filter: brightness(1.4);
+    }
+    70% {
+        outline: 1px solid #DDDDFF;
+        outline-offset: 2px;
+        filter: brightness(1.1);
+    }
+    100% {
+        outline: 0px solid #FFFFFF;
+        outline-offset: 0px;
+        filter: brightness(1);
+    }
+}
+
+/* Enhanced white glow for lightning elements */
+.lightning-element {
+    filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.8))
+            drop-shadow(0 0 4px rgba(255, 255, 255, 0.6))
+            drop-shadow(0 0 6px rgba(221, 221, 255, 0.4));
+}
+
+/* Lightning bolt path enhancement */
+.lightning-path {
+    stroke-dasharray: none; /* Solid lightning paths */
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    /* Enhanced glow with multiple shadows */
+    filter: drop-shadow(0 0 1px rgba(255, 255, 255, 1.0))
+            drop-shadow(0 0 3px rgba(255, 255, 255, 0.8))
+            drop-shadow(0 0 6px rgba(221, 221, 255, 0.6))
+            drop-shadow(0 0 12px rgba(187, 187, 255, 0.4));
+    /* Animation for slight pulsing */
+    animation: lightning-path-pulse 0.05s infinite alternate;
+}
+
+@keyframes lightning-path-pulse {
+    0% {
+        opacity: 0.9;
+    }
+    100% {
+        opacity: 1.0;
+    }
+}
+
+/* Golden lightning enhancements */
+.lightning-bolt.golden path {
+    /* Golden lightning has enhanced glow and thickness */
+    stroke-width: 3px;
+    filter: drop-shadow(0 0 2px rgba(255, 255, 255, 1.0))
+            drop-shadow(0 0 4px rgba(255, 255, 255, 0.9))
+            drop-shadow(0 0 8px rgba(221, 221, 255, 0.7))
+            drop-shadow(0 0 16px rgba(187, 187, 255, 0.5));
+}
+
+/* Lightning branching effects (for future expansion) */
+.lightning-branch {
+    opacity: 0.6;
+    stroke-width: 1px;
+    animation: lightning-branch-fade 0.3s ease-out;
+}
+
+@keyframes lightning-branch-fade {
+    0% {
+        opacity: 0.8;
+        stroke-width: 1.5px;
+    }
+    100% {
+        opacity: 0.3;
+        stroke-width: 0.5px;
+    }
+}
+/* ============================================================
+   NEW GENERIC ANIMATION PRIMITIVES
+   ============================================================ */
+
+/* Explosion scale animation */
+@keyframes explosion-scale {
+    0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 1;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.2);
+        opacity: 0.8;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0;
+    }
+}
+
+/* Slash swipe animation */
+@keyframes slash-swipe {
+    0% {
+        transform: translate(-50%, -50%) rotate(var(--rotation, -30deg)) scaleX(0);
+        opacity: 1;
+    }
+    50% {
+        transform: translate(-50%, -50%) rotate(var(--rotation, -30deg)) scaleX(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -50%) rotate(var(--rotation, -30deg)) scaleX(0.8);
+        opacity: 0;
+    }
+}
+
+/* Beam pulse animation */
+@keyframes beam-pulse {
+    0% {
+        opacity: 0;
+        filter: brightness(2);
+    }
+    20% {
+        opacity: 1;
+        filter: brightness(1.5);
+    }
+    80% {
+        opacity: 1;
+        filter: brightness(1);
+    }
+    100% {
+        opacity: 0;
+        filter: brightness(0.5);
+    }
+}
+
+/* Projectile classes */
+.animation-projectile {
+    will-change: left, top;
+}
+
+.animation-arc-projectile {
+    will-change: left, top;
+}
+
+.animation-explosion-flash {
+    will-change: transform, opacity;
+}
+
+.animation-explosion-particle {
+    will-change: left, top, opacity;
+}
+
+.animation-slash {
+    will-change: transform, opacity;
+}
+
+.animation-beam {
+    will-change: opacity;
+}
+
+.animation-shockwave {
+    will-change: width, height, opacity, border-width;
+}

@@ -1,0 +1,15 @@
+{
+  "name": "battleground",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Frontend tests and tooling for Battlegrounds. Game code lives in Battlegrounds/.",
+  "scripts": {
+    "test": "npm run test:snapshot",
+    "test:frontend": "node tests/test_snapshot_player_frontend.js",
+    "test:backend": "python3 Battlegrounds/tests/test_snapshot_player.py",
+    "test:snapshot": "npm run test:backend && npm run test:frontend"
+  },
+  "devDependencies": {
+    "jsdom": "^29.0.2"
+  }
+}

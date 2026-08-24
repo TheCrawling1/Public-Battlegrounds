@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto Battler Arena</title>
+
+    <!-- Google Fonts - Art Deco Style -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+    <!-- Device detection and dynamic CSS loading -->
+    <script>
+        // Device detection
+        function isMobileDevice() {
+    const ua = (navigator.userAgent || navigator.vendor || window.opera).toLowerCase();
+    const isMobileUA = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(ua);
+    const isSmallScreen = window.innerWidth <= 768;
+    return isMobileUA || isSmallScreen;
+  }
+
+  // Always load desktop as the base
+  const desktopLink = document.createElement('link');
+  desktopLink.rel = 'stylesheet';
+  desktopLink.href = 'desktop.css';
+  document.head.appendChild(desktopLink);
+
+  // If mobile, load mobile AFTER desktop so it overrides
+  if (isMobileDevice()) {
+    const mobileLink = document.createElement('link');
+    mobileLink.rel = 'stylesheet';
+    mobileLink.href = 'mobile.css';
+    document.head.appendChild(mobileLink);
+  }
+
+  // ALWAYS load animations.css after device-specific CSS
+  const animationsLink = document.createElement('link');
+  animationsLink.rel = 'stylesheet';
+  animationsLink.href = 'animations.css';
+  document.head.appendChild(animationsLink);
+
+  // Load collection.css
+  const collectionLink = document.createElement('link');
+  collectionLink.rel = 'stylesheet';
+  collectionLink.href = 'collection.css';
+  document.head.appendChild(collectionLink);
+
+        // Load appropriate CSS
+        const cssFile = isMobileDevice() ? 'mobile.css' : 'desktop.css';
+        const cssLink = document.createElement('link');
+        cssLink.rel = 'stylesheet';
+        cssLink.href = cssFile;
+        document.head.appendChild(cssLink);
+
+        // Store device type for JavaScript loading
+        window.deviceType = isMobileDevice() ? 'mobile' : 'desktop';
+
+        console.log(`Loading ${window.deviceType} interface (CSS: ${cssFile})`);
+        console.log('Animations CSS loaded for all devices');
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div id="gameContent" class="loading">
+            <!-- Main menu will be loaded here by main-menu.js -->
+        </div>
+    </div>
+
+    <!-- Core game JavaScript (always loaded) -->
+    <script src="js/lucide-icons.js"></script>
+    <!-- Sound system (load before anything that might trigger sounds) -->
+    <script src="js/sound-bus.js"></script>
+    <script src="js/sound-map.js"></script>
+    <script src="js/music-engine.js"></script>
+    <script src="js/game-core.js"></script>
+    <script src="js/main-menu.js"></script>
+    <script src="js/events.js"></script>
+    <script src="js/end-screen.js"></script>
+    <script src="js/collection.js"></script>
+
+    <!-- Animation system (load before combat.js) -->
+    <script src="js/animations.js"></script>
+    <script src="js/combat.js"></script>
+
+    <!-- Dynamic UI loading based on device -->
+    <script>
+        // Load appropriate UI display JavaScript
+        function loadUIScript() {
+            // Desktop UI is split into modules, loaded in dependency order
+            const uiModules = [
+                'js/ui/display-tooltips.js',
+                'js/ui/display-ring.js',
+                'js/ui/display-effects.js',
+                'js/ui/display-core.js',
+                'js/ui/display-selection.js',
+                'js/ui/display-minion.js'
+            ];
+
+            const cacheBuster = '?v=' + Date.now();
+            let loadedCount = 0;
+            let failedModules = [];
+
+            function onAllModulesLoaded() {
+                if (failedModules.length > 0) {
+                    console.error('Failed to load UI modules:', failedModules.join(', '));
+                    // Show user-visible error so broken UI state is obvious
+                    document.body.insertAdjacentHTML('afterbegin',
+                        '<div style="background:#cc4444;color:#fff;padding:10px;text-align:center;font-weight:bold;">' +
+                        'UI modules failed to load: ' + failedModules.join(', ') + '. Please refresh.</div>');
+                }
+
+                console.log('Desktop UI loaded (' + (uiModules.length - failedModules.length) + '/' + uiModules.length + ' modules)');
+
+                // Notify that UI functions are now available
+                window.uiScriptLoaded = true;
+                if (typeof window.onUIScriptLoaded === 'function') {
+                    window.onUIScriptLoaded();
+                }
+
+                // If mobile, load mobile overrides after desktop
+                if (window.deviceType === 'mobile') {
+                    const mobileScript = document.createElement('script');
+                    mobileScript.src = 'js/ui-display-mobile.js';
+                    mobileScript.onload = function() {
+                        console.log('Mobile UI overrides loaded');
+                        console.log('Mobile interface ready');
+                    };
+                    document.head.appendChild(mobileScript);
+                } else {
+                    console.log('Desktop interface ready');
+                }
+            }
+
+            function onModuleResult(moduleSrc, success) {
+                if (!success) {
+                    failedModules.push(moduleSrc);
+                }
+                loadedCount++;
+                if (loadedCount >= uiModules.length) {
+                    onAllModulesLoaded();
+                }
+            }
+
+            uiModules.forEach(function(moduleSrc) {
+                const script = document.createElement('script');
+                script.src = moduleSrc + cacheBuster;
+                script.onload = function() { onModuleResult(moduleSrc, true); };
+                script.onerror = function() { onModuleResult(moduleSrc, false); };
+                document.head.appendChild(script);
+            });
+        }
+
+        // Load UI scripts when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadUIScript);
+        } else {
+            loadUIScript();
+        }
+    </script>
+
+    <!-- Orientation change handler for mobile -->
+    <script>
+        window.addEventListener('orientationchange', function() {
+            // Refresh the interface after orientation change
+            setTimeout(function() {
+                if (window.deviceType === 'mobile' && typeof updateDisplay === 'function') {
+                    updateDisplay();
+                }
+            }, 500);
+        });
+
+        // Handle window resize for responsive breakpoint changes
+        let resizeTimeout;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(function() {
+                const newDeviceType = (window.innerWidth <= 768) ? 'mobile' : 'desktop';
+
+                // If device type changed due to resize, reload page for proper CSS/JS
+                if (newDeviceType !== window.deviceType) {
+                    console.log(`Device type changed from ${window.deviceType} to ${newDeviceType}, reloading...`);
+                    window.location.reload();
+                }
+            }, 250);
+        });
+    </script>
+</body>
+</html>

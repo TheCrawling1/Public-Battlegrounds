@@ -1,0 +1,8 @@
+Flask>=3.1,<4.0
+Flask-SQLAlchemy>=3.1,<4.0
+Flask-Cors>=6.0,<7.0
+Werkzeug>=3.1,<4.0
+SQLAlchemy>=2.0,<3.0
+
+# Production WSGI server (see wsgi.py). Not needed for local development.
+gunicorn>=22.0,<23.0

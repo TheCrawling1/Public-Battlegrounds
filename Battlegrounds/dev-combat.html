@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dev Mode - Dual Combat Simulator</title>
+
+    <!-- Reuse main game CSS -->
+    <link rel="stylesheet" href="desktop.css">
+    <link rel="stylesheet" href="animations.css">
+
+    <!-- Dev mode specific styles -->
+    <style>
+        .dev-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .dev-header {
+            background: linear-gradient(135deg, #8B008B 0%, #4B0082 100%);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .dev-header h1 {
+            color: #FFD700;
+            margin: 0;
+            font-size: 2rem;
+        }
+
+        .dev-header p {
+            color: rgba(255,255,255,0.8);
+            margin-top: 10px;
+        }
+
+        /* Mode Selection */
+        .mode-selection {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .mode-selection h4 {
+            color: #FFD700;
+            margin-bottom: 15px;
+        }
+
+        .mode-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .mode-btn {
+            background: linear-gradient(135deg, #6A5ACD, #4B0082);
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 10px;
+            color: white;
+            padding: 15px 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            font-weight: bold;
+            min-width: 200px;
+        }
+
+        .mode-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(106, 90, 205, 0.4);
+        }
+
+        .mode-btn.active {
+            background: linear-gradient(135deg, #32CD32, #228B22);
+            border-color: #32CD32;
+            box-shadow: 0 0 20px rgba(50, 205, 50, 0.5);
+        }
+
+        .mode-description {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.4;
+        }
+
+        .dev-layout {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+        }
+
+        .dev-sidebar {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+        }
+
+        .dev-main {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .band-setup {
+            margin-bottom: 20px;
+        }
+
+        .band-setup h3 {
+            color: #FFD700;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .minion-selector {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .minion-selector select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 5px;
+        }
+
+        .minion-options {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .minion-options label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #FFD700;
+            font-size: 0.9rem;
+        }
+
+        .minion-list {
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            padding: 10px;
+            min-height: 100px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .minion-list-item {
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 8px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            cursor: move;
+        }
+
+        .minion-list-item:hover {
+            background: rgba(255,255,255,0.15);
+            transform: translateX(5px);
+        }
+
+        .minion-list-item.dragging {
+            opacity: 0.5;
+            transform: scale(0.95);
+        }
+
+        .minion-list-item .minion-info {
+            flex: 1;
+        }
+
+        .minion-list-item .minion-name {
+            font-weight: bold;
+            color: white;
+        }
+
+        .minion-list-item .minion-stats {
+            font-size: 0.9rem;
+            color: #FFD700;
+        }
+
+        .minion-list-item .minion-controls {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .minion-list-item .position-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .position-btn {
+            background: rgba(33, 150, 243, 0.8);
+            border: none;
+            border-radius: 3px;
+            color: white;
+            cursor: pointer;
+            padding: 2px 6px;
+            font-size: 0.7rem;
+            transition: all 0.2s ease;
+        }
+
+        .position-btn:hover {
+            background: rgba(33, 150, 243, 1);
+            transform: scale(1.1);
+        }
+
+        .position-btn:disabled {
+            background: rgba(100, 100, 100, 0.5);
+            cursor: not-allowed;
+        }
+
+        .remove-btn {
+            background: rgba(244, 67, 54, 0.8);
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .remove-btn:hover {
+            background: rgba(244, 67, 54, 1);
+            transform: scale(1.1);
+        }
+
+        .minion-list-item .golden-badge {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: black;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+
+        /* Mode-specific control panels */
+        .mode-controls {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .mode-controls h4 {
+            color: #FFD700;
+            margin-bottom: 10px;
+        }
+
+        #stepModeControls {
+            border: 2px solid #32CD32;
+        }
+
+        #playbackModeControls {
+            border: 2px solid #FF6347;
+        }
+
+        .control-section {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .control-section h4 {
+            color: #FFD700;
+            margin-bottom: 10px;
+        }
+
+        .preset-buttons {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .preset-btn {
+            background: linear-gradient(135deg, #9C27B0, #7B1FA2);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            font-size: 0.85rem;
+        }
+
+        .preset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(156, 39, 176, 0.4);
+        }
+
+        .preset-btn strong {
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .preset-btn small {
+            opacity: 0.8;
+            font-size: 0.75rem;
+        }
+
+        .settings-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .settings-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255,255,255,0.9);
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .settings-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        /* Game State Spoofing Section */
+        .spoofing-section {
+            margin: 15px 0;
+            padding: 10px;
+            background: rgba(255,215,0,0.1);
+            border-radius: 8px;
+            border: 1px solid rgba(255,215,0,0.3);
+        }
+
+        .spoofing-section h5 {
+            color: #FFD700;
+            margin: 0 0 10px 0;
+            font-size: 0.9rem;
+        }
+
+        .editor-field {
+            margin-bottom: 10px;
+        }
+
+        .editor-field label {
+            display: block;
+            color: #FFD700;
+            margin-bottom: 5px;
+            font-size: 0.85rem;
+        }
+
+        .editor-field input {
+            width: 100%;
+            padding: 5px;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 5px;
+        }
+
+        .spoofing-help {
+            font-size: 0.75rem;
+            opacity: 0.8;
+            margin-top: 5px;
+            line-height: 1.3;
+        }
+
+        /* Post-Combat Band Display */
+        .post-combat-band {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(76, 175, 80, 0.1);
+            border-radius: 10px;
+            border: 2px solid #4CAF50;
+        }
+
+        .post-combat-band h4 {
+            color: #4CAF50;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .debug-panel {
+            background: rgba(0,0,0,0.5);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .debug-panel h4 {
+            color: #4CAF50;
+            margin-bottom: 10px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .debug-info {
+            color: #87CEEB;
+            line-height: 1.5;
+        }
+
+        .debug-info .debug-label {
+            color: #FFD700;
+            font-weight: bold;
+        }
+
+        .debug-info .debug-value {
+            color: white;
+        }
+
+        .debug-section {
+            margin-bottom: 15px;
+        }
+
+        .export-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+
+        /* Dev-specific playback mode enhancements */
+        .dev-playback-container {
+            position: relative;
+        }
+
+        .dev-playback-controls {
+            background: rgba(138, 43, 226, 0.1);
+            border: 1px solid rgba(138, 43, 226, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .dev-playback-controls h4 {
+            color: #DDA0DD;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .dev-playback-controls .btn {
+            margin: 0 5px;
+            min-width: 120px;
+        }
+
+        .combat-zone {
+            border-color: #9C27B0 !important;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 1.2rem;
+            color: #FFD700;
+        }
+
+        .step-mode-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .playback-mode-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        /* Permanent buff indicator styling for post-combat display */
+        .permanent-buff-indicator {
+            position: absolute;
+            bottom: 35px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(76, 175, 80, 0.9);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            white-space: nowrap;
+            z-index: 10;
+        }
+
+        .minion-card.has-permanent-buffs {
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="dev-container">
+        <div class="dev-header">
+            <h1>🧪 Dev Mode - Combat Simulator with Band State Tracking</h1>
+            <p>Test combat scenarios and see permanent band buffs after combat</p>
+            <button class="btn btn-secondary" onclick="window.location.href='index.html'" style="margin-top: 10px;">
+                ⬅️ Back to Game
+            </button>
+        </div>
+
+        <!-- Mode Selection -->
+        <div class="mode-selection">
+            <h4>🎛️ Combat Mode Selection</h4>
+            <div class="mode-buttons">
+                <button class="mode-btn active" id="stepModeBtn" onclick="switchToStepMode()">
+                    <div>🔍 Step Mode</div>
+                    <div style="font-size: 0.8rem; margin-top: 5px; opacity: 0.9;">Interactive Debugging</div>
+                </button>
+                <button class="mode-btn" id="playbackModeBtn" onclick="switchToPlaybackMode()">
+                    <div>🎬 Playback Mode</div>
+                    <div style="font-size: 0.8rem; margin-top: 5px; opacity: 0.9;">Production System</div>
+                </button>
+            </div>
+            <div class="mode-description">
+                <strong>Step Mode:</strong> Interactive debugging with band state tracking.
+                <strong>Playback Mode:</strong> Full combat playback with post-combat band display.
+            </div>
+        </div>
+
+        <div class="dev-layout">
+            <!-- Sidebar for band setup and controls -->
+            <div class="dev-sidebar">
+                <div class="control-section">
+                    <h4>⚡ Quick Presets</h4>
+                    <div class="preset-buttons" id="presetButtons">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="band-setup">
+                    <h3>⚔️ Player Band</h3>
+                    <div class="minion-selector">
+                        <select id="playerMinionSelect">
+                            <option value="">Select a minion...</option>
+                        </select>
+                        <div class="minion-options">
+                            <label>
+                                <input type="checkbox" id="playerGolden">
+                                <span>✨ Golden</span>
+                            </label>
+                            <button class="btn btn-primary" onclick="addMinion('player')" style="padding: 5px 10px; font-size: 0.85rem;">
+                                ➕ Add
+                            </button>
+                        </div>
+                    </div>
+                    <div class="minion-list" id="playerBandList">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="band-setup">
+                    <h3>💀 Enemy Band</h3>
+                    <div class="minion-selector">
+                        <select id="enemyMinionSelect">
+                            <option value="">Select a minion...</option>
+                        </select>
+                        <div class="minion-options">
+                            <label>
+                                <input type="checkbox" id="enemyGolden">
+                                <span>✨ Golden</span>
+                            </label>
+                            <button class="btn btn-primary" onclick="addMinion('enemy')" style="padding: 5px 10px; font-size: 0.85rem;">
+                                ➕ Add
+                            </button>
+                        </div>
+                    </div>
+                    <div class="minion-list" id="enemyBandList">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Step Mode Controls -->
+                <div class="mode-controls" id="stepModeControls">
+                    <h4>🔍 Step Mode Controls</h4>
+                    <div class="settings-group">
+                        <label>
+                            <input type="checkbox" id="debugMode" checked>
+                            <span>🔍 Debug Mode</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" id="enableFatigue" checked>
+                            <span>💀 Enable Fatigue</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" id="manualTargeting">
+                            <span>🎯 Manual Targeting</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" id="autoRun">
+                            <span>⚡ Auto-run on Create</span>
+                        </label>
+                    </div>
+
+                    <!-- Game State Spoofing -->
+                    <div class="spoofing-section">
+                        <h5>💰 Game State Spoofing</h5>
+                        <div class="editor-field">
+                            <label>Gold Amount</label>
+                            <input type="number" id="spoofedGold" min="0" max="999" value="0">
+                        </div>
+                        <div class="spoofing-help">
+                            Used for Rich keyword (King)<br>
+                            Set before creating combat
+                        </div>
+                    </div>
+
+                    <!-- Hero Selection -->
+                    <div class="spoofing-section" style="background: rgba(255,105,180,0.1); border-color: rgba(255,105,180,0.3);">
+                        <h5>🦸 Hero Selection</h5>
+                        <div class="editor-field">
+                            <label>Select Hero</label>
+                            <select id="heroSelect" onchange="updateHeroDescription()">
+                                <option value="">None</option>
+                            </select>
+                        </div>
+                        <div class="spoofing-help" id="heroDescription" style="color: #FFD700;">
+                            Select a hero to apply their effects during combat
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="createCombat()" style="width: 100%;">
+                        🎮 Create Step Combat
+                    </button>
+                </div>
+
+                <!-- Playback Mode Controls -->
+                <div class="mode-controls" id="playbackModeControls" style="display: none;">
+                    <h4>🎬 Playback Mode Controls</h4>
+                    <div class="settings-group">
+                        <label>
+                            <input type="checkbox" id="debugMode" checked>
+                            <span>🔍 Debug Mode</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" id="enableFatigue" checked>
+                            <span>💀 Enable Fatigue</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" id="autoRun">
+                            <span>⚡ Auto-run on Create</span>
+                        </label>
+                    </div>
+
+                    <!-- Game State Spoofing for Playback Mode -->
+                    <div class="spoofing-section">
+                        <h5>💰 Game State Spoofing</h5>
+                        <div class="editor-field">
+                            <label>Gold Amount</label>
+                            <input type="number" id="spoofedGoldPlayback" min="0" max="999" value="0">
+                        </div>
+                        <div class="spoofing-help">
+                            Used for Rich keyword (King)<br>
+                            Set before creating combat
+                        </div>
+                    </div>
+
+                    <!-- Hero Selection for Playback -->
+                    <div class="spoofing-section" style="background: rgba(255,105,180,0.1); border-color: rgba(255,105,180,0.3);">
+                        <h5>🦸 Hero Selection</h5>
+                        <div class="editor-field">
+                            <label>Select Hero</label>
+                            <select id="heroSelectPlayback" onchange="updateHeroDescriptionPlayback()">
+                                <option value="">None</option>
+                            </select>
+                        </div>
+                        <div class="spoofing-help" id="heroDescriptionPlayback" style="color: #FFD700;">
+                            Select a hero to apply their effects during combat
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="createCombat()" style="width: 100%;">
+                        🎮 Create Playback Combat
+                    </button>
+                    <div style="margin-top: 10px; padding: 10px; background: rgba(255,140,0,0.1); border-radius: 8px; border: 1px solid rgba(255,140,0,0.3);">
+                        <div style="color: #FFD700; font-size: 0.85rem; text-align: center;">
+                            💡 <strong>Production System</strong><br>
+                            Uses exact combat.js
+                        </div>
+                    </div>
+                </div>
+
+                <div class="export-section">
+                    <button class="btn btn-secondary" onclick="exportConfig()" style="width: 100%; margin-bottom: 10px;">
+                        📤 Export Config
+                    </button>
+                    <button class="btn btn-secondary" onclick="importConfig()" style="width: 100%;">
+                        📥 Import Config
+                    </button>
+                </div>
+            </div>
+
+            <!-- Main area for combat display -->
+            <div class="dev-main">
+                <div id="combatDisplay">
+                    <div class="loading">
+                        Select combat mode, configure minions, and click "Create Combat" to begin simulation
+                    </div>
+                </div>
+
+                <!-- Debug Panel -->
+                <div class="debug-panel" id="debugPanel" style="display: none;">
+                    <h4>🔍 Debug Information</h4>
+                    <div class="debug-info" id="debugInfo">
+                        <!-- Debug info populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load production game systems -->
+    <script src="js/game-core.js"></script>
+    <script src="js/ui/display-tooltips.js"></script>
+    <script src="js/ui/display-ring.js"></script>
+    <script src="js/ui/display-effects.js"></script>
+    <script src="js/ui/display-core.js"></script>
+    <script src="js/ui/display-selection.js"></script>
+    <script src="js/ui/display-minion.js"></script>
+    <script src="js/animations.js"></script>
+    <script src="js/combat.js"></script>
+
+    <!-- Dev mode specific JavaScript -->
+    <script src="js/dev-combat.js"></script>
+</body>
+</html>

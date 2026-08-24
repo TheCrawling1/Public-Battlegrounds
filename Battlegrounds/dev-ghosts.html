@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dev Mode - Ghost Analysis</title>
+
+    <!-- Reuse main game CSS for minion card rendering -->
+    <link rel="stylesheet" href="desktop.css?v=11">
+    <link rel="stylesheet" href="animations.css?v=11">
+
+    <!-- Dev ghosts specific styles -->
+    <style>
+        .dev-container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+
+        .dev-header {
+            background: linear-gradient(135deg, #1a237e 0%, #0d47a1 100%);
+            padding: 20px; border-radius: 15px; margin-bottom: 20px; text-align: center;
+        }
+        .dev-header h1 { color: #FFD700; margin: 0; font-size: 2rem; }
+        .dev-header p { color: rgba(255,255,255,0.8); margin-top: 10px; }
+
+        /* Tabs */
+        .tab-bar { display: flex; gap: 4px; margin-bottom: 20px; background: rgba(255,255,255,0.05); border-radius: 12px; padding: 4px; }
+        .tab-btn {
+            flex: 1; padding: 12px 20px; background: transparent; border: none; border-radius: 10px;
+            color: rgba(255,255,255,0.6); font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease;
+        }
+        .tab-btn:hover { color: rgba(255,255,255,0.9); background: rgba(255,255,255,0.05); }
+        .tab-btn.active { background: linear-gradient(135deg, #1565c0, #0d47a1); color: #FFD700; }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        /* Stat Cards */
+        .stat-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px; }
+        .stat-card { background: rgba(255,255,255,0.08); border-radius: 12px; padding: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
+        .stat-value { font-size: 2rem; font-weight: 700; color: #FFD700; }
+        .stat-label { color: rgba(255,255,255,0.6); margin-top: 5px; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* Section Cards */
+        .section-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        .section-card { background: rgba(255,255,255,0.06); border-radius: 12px; padding: 20px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 15px; }
+        .section-card.full-width { grid-column: 1 / -1; }
+        .section-card h3 { color: #90caf9; margin: 0 0 15px 0; font-size: 1.1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
+
+        /* Source Tags */
+        .source-tags { display: flex; gap: 12px; flex-wrap: wrap; }
+        .source-tag { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; }
+        .tag-label { text-transform: uppercase; letter-spacing: 0.5px; }
+        .tag-count { font-size: 1.1rem; }
+        .tag-player { background: rgba(76,175,80,0.2); color: #81c784; border: 1px solid rgba(76,175,80,0.3); }
+        .tag-headless { background: rgba(33,150,243,0.2); color: #64b5f6; border: 1px solid rgba(33,150,243,0.3); }
+        .tag-ai { background: rgba(255,152,0,0.2); color: #ffb74d; border: 1px solid rgba(255,152,0,0.3); }
+        .tag-unknown { background: rgba(158,158,158,0.2); color: #bdbdbd; border: 1px solid rgba(158,158,158,0.3); }
+
+        /* Battle bar */
+        .battle-bar { display: flex; height: 36px; border-radius: 8px; overflow: hidden; background: rgba(0,0,0,0.3); }
+        .bar-fill { display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 600; white-space: nowrap; padding: 0 8px; }
+        .player-fill { background: rgba(76,175,80,0.6); color: #fff; }
+        .ghost-fill { background: rgba(244,67,54,0.6); color: #fff; }
+        .draw-fill { background: rgba(158,158,158,0.4); color: #ccc; }
+
+        /* Vertical Bar Chart */
+        .bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 180px; padding-top: 10px; }
+        .chart-bar { flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; position: relative; }
+        .chart-bar-fill { width: 100%; max-width: 50px; background: linear-gradient(180deg, #42a5f5, #1565c0); border-radius: 4px 4px 0 0; margin-top: auto; min-height: 4px; }
+        .chart-bar-label { color: rgba(255,255,255,0.6); font-size: 0.75rem; margin-top: 6px; }
+        .chart-bar-value { position: absolute; top: -2px; color: #90caf9; font-size: 0.75rem; font-weight: 600; }
+
+        /* Hero grid */
+        .hero-grid { display: flex; gap: 12px; flex-wrap: wrap; }
+        .hero-card { background: rgba(255,255,255,0.05); border-radius: 10px; padding: 15px 25px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
+        .hero-name { color: #FFD700; font-weight: 600; text-transform: capitalize; }
+        .hero-count { color: rgba(255,255,255,0.5); font-size: 0.85rem; margin-top: 4px; }
+
+        /* Horizontal bar chart for minion frequency */
+        .minion-bars { display: flex; flex-direction: column; gap: 6px; }
+        .minion-bar-row { display: grid; grid-template-columns: 150px 1fr 100px; align-items: center; gap: 10px; }
+        .bar-name { color: rgba(255,255,255,0.9); font-size: 0.85rem; text-align: right; }
+        .minion-bar-track { height: 18px; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden; }
+        .minion-bar-fill { height: 100%; background: linear-gradient(90deg, #1565c0, #42a5f5); border-radius: 4px; min-width: 4px; }
+        .bar-count { color: rgba(255,255,255,0.5); font-size: 0.8rem; }
+
+        /* Data Table */
+        .data-table { width: 100%; border-collapse: collapse; }
+        .data-table th { text-align: left; color: rgba(255,255,255,0.5); padding: 8px 12px; font-size: 0.8rem; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .data-table td { padding: 8px 12px; color: rgba(255,255,255,0.85); border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 0.9rem; }
+        .data-table tr:hover td { background: rgba(255,255,255,0.03); }
+
+        /* Size Chips */
+        .size-chips { display: flex; gap: 10px; flex-wrap: wrap; }
+        .size-chip { background: rgba(255,255,255,0.05); padding: 8px 16px; border-radius: 20px; color: rgba(255,255,255,0.7); font-size: 0.85rem; }
+        .size-num { color: #FFD700; font-weight: 700; font-size: 1.1rem; }
+        .size-count { color: rgba(255,255,255,0.4); }
+
+        /* Milestone Grid */
+        .milestone-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+        .milestone-col { background: rgba(255,255,255,0.03); border-radius: 8px; padding: 12px; }
+        .ms-header { color: #FFD700; font-weight: 600; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .ms-minion { color: rgba(255,255,255,0.75); font-size: 0.82rem; padding: 2px 0; }
+
+        /* Ghost Cards - container with header + band grid */
+        .ghost-card {
+            background: rgba(255,255,255,0.04); border-radius: 10px; padding: 14px;
+            margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.06); transition: border-color 0.2s;
+        }
+        .ghost-card:hover { border-color: rgba(255,255,255,0.15); background: rgba(255,255,255,0.06); }
+        .ghost-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+        .ghost-power { color: #FFD700; font-weight: 700; font-size: 1rem; }
+        .ghost-ms { color: #90caf9; font-size: 0.85rem; }
+        .hero-badge { background: rgba(156,39,176,0.3); color: #ce93d8; padding: 2px 10px; border-radius: 12px; font-size: 0.8rem; text-transform: capitalize; }
+        .ghost-player { color: rgba(255,255,255,0.5); font-size: 0.85rem; }
+        .ghost-ring { color: rgba(255,255,255,0.4); font-size: 0.8rem; }
+        .has-actions-badge { background: rgba(33,150,243,0.2); color: #64b5f6; padding: 2px 8px; border-radius: 8px; font-size: 0.7rem; font-weight: 700; }
+
+        /* Band display inside ghost cards - constrain card sizes */
+        .ghost-band-display .band-grid {
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            max-width: 100%;
+        }
+        .ghost-band-display .band-grid .minion-card {
+            max-width: 120px;
+        }
+
+        /* Battle milestone bars */
+        .battle-chart { display: flex; flex-direction: column; gap: 8px; }
+        .battle-ms-row { display: grid; grid-template-columns: 60px 1fr 140px; align-items: center; gap: 10px; }
+        .battle-ms-label { color: rgba(255,255,255,0.6); font-size: 0.85rem; text-align: right; }
+        .battle-ms-bar { height: 22px; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden; }
+        .battle-ms-fill { height: 100%; background: linear-gradient(90deg, #2e7d32, #66bb6a); border-radius: 4px; min-width: 2px; }
+        .battle-ms-stat { color: rgba(255,255,255,0.5); font-size: 0.8rem; }
+
+        /* Filter Bar */
+        .filter-bar { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+        .filter-bar select { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; color: #fff; padding: 8px 14px; font-size: 0.9rem; cursor: pointer; }
+        .filter-bar select option { background: #1a237e; color: #fff; }
+
+        /* Pagination */
+        .pagination { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 15px; }
+        .page-info { color: rgba(255,255,255,0.5); font-size: 0.85rem; }
+        .pagination button { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 6px 16px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; }
+        .pagination button:hover { background: rgba(255,255,255,0.2); }
+
+        /* Populate Form */
+        .populate-form { max-width: 700px; margin: 0 auto; background: rgba(255,255,255,0.06); border-radius: 12px; padding: 30px; border: 1px solid rgba(255,255,255,0.08); }
+        .populate-form h3 { color: #FFD700; margin: 0 0 5px 0; }
+        .form-row { margin: 15px 0; }
+        .form-row label { display: block; color: rgba(255,255,255,0.7); margin-bottom: 6px; font-size: 0.9rem; }
+        .form-row input[type="number"] { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; color: #fff; padding: 8px 14px; font-size: 1rem; width: 120px; }
+        .form-row input[type="checkbox"] { margin-right: 8px; }
+        .form-actions { display: flex; gap: 12px; margin-top: 25px; }
+        .btn-primary { background: linear-gradient(135deg, #1565c0, #0d47a1); border: none; color: #fff; padding: 10px 24px; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; }
+        .btn-primary:hover { filter: brightness(1.1); }
+        .btn-danger { background: rgba(244,67,54,0.2); border: 1px solid rgba(244,67,54,0.4); color: #ef5350; padding: 10px 24px; border-radius: 8px; font-size: 1rem; cursor: pointer; }
+        .btn-danger:hover { background: rgba(244,67,54,0.3); }
+        .result-box { margin-top: 20px; padding: 15px; border-radius: 10px; }
+        .result-box.success { background: rgba(76,175,80,0.1); border: 1px solid rgba(76,175,80,0.3); }
+        .result-box.error { background: rgba(244,67,54,0.1); border: 1px solid rgba(244,67,54,0.3); color: #ef5350; }
+        .result-box h4 { color: #81c784; margin: 0 0 10px 0; }
+        .result-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; color: rgba(255,255,255,0.7); }
+
+        /* Detail Overlay */
+        .detail-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000;
+            overflow-y: auto; padding: 40px 20px;
+        }
+        .detail-overlay.active { display: block; }
+        .detail-content {
+            max-width: 900px; margin: 0 auto; background: #1a1a2e; border-radius: 15px;
+            padding: 30px; border: 1px solid rgba(255,255,255,0.1); position: relative;
+        }
+        .detail-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .detail-header h2 { color: #FFD700; margin: 0; }
+        .detail-close { background: none; border: none; color: rgba(255,255,255,0.6); font-size: 2rem; cursor: pointer; line-height: 1; }
+        .detail-close:hover { color: #fff; }
+        .detail-meta { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-bottom: 20px; color: rgba(255,255,255,0.7); font-size: 0.9rem; }
+        .detail-content h3 { color: #90caf9; margin: 20px 0 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; }
+
+        /* Detail band grid - larger cards */
+        .detail-content .band-grid {
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        }
+        .detail-content .band-grid .minion-card {
+            max-width: 160px;
+        }
+
+        /* Actions Timeline */
+        .actions-timeline { display: flex; flex-direction: column; gap: 4px; max-height: 500px; overflow-y: auto; }
+        .action-row {
+            display: grid; grid-template-columns: 30px 60px 1fr 140px 60px; align-items: center; gap: 8px;
+            padding: 6px 10px; border-radius: 6px; background: rgba(255,255,255,0.03); font-size: 0.82rem;
+        }
+        .action-row:hover { background: rgba(255,255,255,0.06); }
+        .action-icon { font-size: 1rem; text-align: center; }
+        .action-step { color: rgba(255,255,255,0.4); font-size: 0.75rem; }
+        .action-detail { color: rgba(255,255,255,0.85); }
+        .action-band { color: rgba(255,255,255,0.35); font-size: 0.75rem; cursor: help; }
+        .action-hp { color: rgba(255,255,255,0.4); font-size: 0.75rem; text-align: right; }
+        .action-win { color: #81c784; font-weight: 600; }
+        .action-loss { color: #ef5350; font-weight: 600; }
+        .action-event { color: #90caf9; }
+        .action-add { color: #81c784; }
+        .action-remove { color: #ef5350; }
+
+        /* Journey cards */
+        .journey-card {
+            background: rgba(255,255,255,0.04); border-radius: 10px; padding: 16px;
+            margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.06);
+        }
+        .journey-card.victory { border-left: 3px solid #81c784; }
+        .journey-card.death { border-left: 3px solid #ef5350; }
+        .journey-header { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
+        .journey-result { font-weight: 700; font-size: 0.9rem; padding: 3px 12px; border-radius: 12px; }
+        .journey-result.victory { background: rgba(76,175,80,0.2); color: #81c784; }
+        .journey-result.death { background: rgba(244,67,54,0.2); color: #ef5350; }
+        .journey-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; margin-bottom: 12px; }
+        .journey-stat { background: rgba(255,255,255,0.03); padding: 8px 12px; border-radius: 6px; }
+        .journey-stat-label { color: rgba(255,255,255,0.4); font-size: 0.7rem; text-transform: uppercase; }
+        .journey-stat-value { color: rgba(255,255,255,0.9); font-size: 1rem; font-weight: 600; }
+
+        /* Ghost sequence (win/loss dots) */
+        .ghost-sequence { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+        .ghost-dot { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 0.7rem; font-weight: 700; cursor: help; }
+        .ghost-dot.win { background: rgba(76,175,80,0.3); color: #81c784; border: 1px solid rgba(76,175,80,0.5); }
+        .ghost-dot.loss { background: rgba(244,67,54,0.3); color: #ef5350; border: 1px solid rgba(244,67,54,0.5); }
+
+        /* Hero summary table */
+        .hero-summary-card { background: rgba(255,255,255,0.05); border-radius: 10px; padding: 16px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.08); }
+        .hero-summary-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+        .hero-summary-name { color: #FFD700; font-size: 1.2rem; font-weight: 700; text-transform: capitalize; }
+        .hero-summary-record { color: rgba(255,255,255,0.7); font-size: 0.9rem; }
+        .hero-bar { display: flex; height: 24px; border-radius: 6px; overflow: hidden; background: rgba(0,0,0,0.3); margin-bottom: 8px; }
+
+        /* Combat breakdown chips */
+        .combat-breakdown { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+        .combat-type-chip {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: rgba(255,255,255,0.04); padding: 4px 10px; border-radius: 6px;
+            font-size: 0.75rem; border: 1px solid rgba(255,255,255,0.06);
+        }
+        .combat-type-name { color: rgba(255,255,255,0.6); text-transform: capitalize; }
+        .combat-type-dmg { color: rgba(244,67,54,0.7); }
+
+        /* Ghost battle detail list */
+        .ghost-battles-detail { margin-bottom: 10px; }
+        .ghost-battles-label { color: rgba(255,255,255,0.4); font-size: 0.75rem; margin-bottom: 6px; }
+        .ghost-battle-list { display: flex; flex-direction: column; gap: 3px; }
+        .ghost-battle-entry {
+            display: flex; align-items: center; gap: 8px; padding: 4px 10px;
+            border-radius: 5px; font-size: 0.8rem; background: rgba(255,255,255,0.02);
+        }
+        .ghost-battle-entry.win { border-left: 2px solid #81c784; }
+        .ghost-battle-entry.loss { border-left: 2px solid #ef5350; }
+        .ghost-battle-num { color: rgba(255,255,255,0.3); font-size: 0.7rem; min-width: 20px; }
+        .ghost-battle-result { font-weight: 700; font-size: 0.75rem; min-width: 35px; }
+        .ghost-battle-result.win { color: #81c784; }
+        .ghost-battle-result.loss { color: #ef5350; }
+        .ghost-battle-power { color: rgba(255,255,255,0.5); font-size: 0.75rem; }
+        .ghost-battle-opp { color: rgba(255,255,255,0.6); font-size: 0.75rem; }
+        .ghost-battle-dmg { color: #ef5350; font-size: 0.75rem; font-weight: 600; margin-left: auto; }
+
+        /* Killing ghost info */
+        .killing-ghost-info {
+            background: rgba(244,67,54,0.08); border: 1px solid rgba(244,67,54,0.2);
+            border-radius: 6px; padding: 8px 12px; margin: 8px 0;
+            color: rgba(255,255,255,0.7); font-size: 0.82rem;
+        }
+        .killing-ghost-info strong { color: #ef5350; text-transform: capitalize; }
+
+        /* Populate Progress */
+        .populate-progress-box { margin-top: 20px; }
+        .populate-form { max-width: 700px; }
+        .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; color: rgba(255,255,255,0.8); font-size: 0.9rem; }
+        .progress-bar-track { height: 20px; background: rgba(255,255,255,0.08); border-radius: 10px; overflow: hidden; margin-bottom: 10px; }
+        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #1565c0, #42a5f5); border-radius: 10px; transition: width 0.5s ease; min-width: 2px; }
+        .progress-current { color: rgba(255,255,255,0.5); font-size: 0.85rem; margin-bottom: 12px; }
+        .progress-cancel-notice { color: #ffb74d; font-size: 0.85rem; font-weight: 600; margin-bottom: 12px; }
+        .progress-results { max-height: 400px; overflow-y: auto; margin-top: 12px; }
+        .progress-results .data-table { font-size: 0.82rem; }
+        .progress-results .data-table td { padding: 4px 8px; }
+        .progress-results .data-table th { padding: 4px 8px; }
+        .progress-errors { margin-top: 12px; }
+        .progress-errors h4 { color: #ef5350; margin: 0 0 6px 0; font-size: 0.9rem; }
+        .error-line { color: rgba(244,67,54,0.8); font-size: 0.8rem; padding: 4px 8px; background: rgba(244,67,54,0.05); border-radius: 4px; margin-bottom: 3px; word-break: break-all; }
+
+        /* Diagnostic trail (expandable log for failed games) */
+        .btn-trail { background: rgba(255,152,0,0.2); border: 1px solid rgba(255,152,0,0.4); color: #ffb74d; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; cursor: pointer; font-weight: 600; }
+        .btn-trail:hover { background: rgba(255,152,0,0.3); }
+        .trail-row td { padding: 0 !important; }
+        .diagnostic-trail { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,152,0,0.15); border-radius: 6px; padding: 12px; margin: 4px 0; font-size: 0.8rem; }
+        .trail-section { margin-bottom: 8px; color: rgba(255,255,255,0.7); }
+        .trail-pending { background: rgba(255,152,0,0.08); padding: 6px 10px; border-radius: 4px; border-left: 3px solid #ffb74d; }
+        .trail-actions { display: flex; flex-direction: column; gap: 2px; max-height: 300px; overflow-y: auto; }
+        .trail-action-row { display: grid; grid-template-columns: 40px 1fr 180px; gap: 8px; padding: 3px 6px; border-radius: 3px; background: rgba(255,255,255,0.02); align-items: center; }
+        .trail-action-row:hover { background: rgba(255,255,255,0.05); }
+        .trail-step { color: rgba(255,255,255,0.3); font-size: 0.7rem; font-family: monospace; }
+        .trail-detail { color: rgba(255,255,255,0.8); }
+        .trail-band { color: rgba(255,255,255,0.3); font-size: 0.7rem; text-align: right; font-family: monospace; }
+        .trail-events { display: flex; flex-wrap: wrap; gap: 4px; }
+        .trail-event-chip { background: rgba(255,255,255,0.04); padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; color: rgba(255,255,255,0.5); }
+        .full-log-content { background: rgba(0,0,0,0.4); color: rgba(255,255,255,0.75); padding: 12px; border-radius: 6px; font-size: 0.75rem; line-height: 1.4; max-height: 500px; overflow-y: auto; white-space: pre-wrap; word-break: break-all; margin: 4px 0; border: 1px solid rgba(255,255,255,0.08); }
+
+        /* States */
+        .loading { text-align: center; color: rgba(255,255,255,0.5); padding: 40px; font-size: 1rem; }
+        .empty-state { text-align: center; padding: 60px 20px; color: rgba(255,255,255,0.5); }
+        .empty-state h3 { color: rgba(255,255,255,0.7); }
+        .error { color: #ef5350; padding: 20px; text-align: center; }
+        .muted { color: rgba(255,255,255,0.4); }
+
+        @media (max-width: 768px) {
+            .stat-cards { grid-template-columns: repeat(2, 1fr); }
+            .section-row { grid-template-columns: 1fr; }
+            .minion-bar-row { grid-template-columns: 100px 1fr 70px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="dev-container">
+        <div class="dev-header">
+            <h1>Ghost Analysis Dashboard</h1>
+            <p>Inspect ghost database, band compositions, combos, and battle results</p>
+        </div>
+
+        <div class="tab-bar">
+            <button class="tab-btn active" data-tab="overview">Overview</button>
+            <button class="tab-btn" data-tab="analysis">Analysis</button>
+            <button class="tab-btn" data-tab="journeys">Game Journeys</button>
+            <button class="tab-btn" data-tab="ghosts">Browse Ghosts</button>
+            <button class="tab-btn" data-tab="populate">Populate</button>
+        </div>
+
+        <div id="tab-overview" class="tab-panel active"></div>
+        <div id="tab-analysis" class="tab-panel"></div>
+        <div id="tab-journeys" class="tab-panel"></div>
+        <div id="tab-ghosts" class="tab-panel"></div>
+        <div id="tab-populate" class="tab-panel"></div>
+    </div>
+
+    <!-- Ghost Detail Overlay -->
+    <div id="detail-overlay" class="detail-overlay" onclick="if(event.target===this)closeDetail()">
+        <div id="detail-content" class="detail-content"></div>
+    </div>
+
+    <script src="js/dev-ghosts.js"></script>
+</body>
+</html>
